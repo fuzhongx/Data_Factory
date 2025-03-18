@@ -1,0 +1,67 @@
+{
+  "name": "vue3-element-plus",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve --mode development",
+    "prod": "vue-cli-service serve --mode production",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "animate.css": "^4.1.1",
+    "axios": "^1.7.7",
+    "core-js": "^3.8.3",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.8.8",
+    "file-saver": "^2.0.5",
+    "jwt-decode": "^4.0.0",
+    "mitt": "^3.0.1",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.2.6",
+    "vue": "^3.2.13",
+    "vue-cookies": "^1.8.4",
+    "vue-i18n": "^10.0.5",
+    "vue-router": "^4.4.5",
+    "vuex": "^4.1.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@types/echarts": "^4.9.22",
+    "@unocss/webpack": "^0.64.1",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "sass": "^1.85.1",
+    "sass-loader": "^16.0.5",
+    "svg-sprite-loader": "^6.0.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}
