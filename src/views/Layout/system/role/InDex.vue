@@ -32,7 +32,7 @@
     </div>
     <div>
       <el-table ref="multipleTableRef" :data="data.role_List" style="width: 100%" @select-all="selectALL"
-        :row-key="getKey" :select-on-indeterminate="allChecked"  @select="selChange">
+        :row-key="getKey" :select-on-indeterminate="allChecked" @select="selChange">
         <el-table-column type="selection" width="55" align="center" reserve-selection />
         <el-table-column prop="roleId" label="角色编号" align="center" />
         <el-table-column prop="roleName" label="角色名称" align="center" />
@@ -63,7 +63,7 @@
     </div>
     <!-- 添加角色--------------- -->
     <el-dialog v-model="play.adddialog" title="添加角色" width="25%">
-      <el-form :model="data.addpost" :rules="rules" class="el-from-padding">
+      <el-form :model="ADD_Role" :rules="rules" class="el-from-padding">
         <el-form-item label="角色名称" :label-width="data.formLabelWidth" prop="roleName">
           <el-input autocomplete="off" v-model="ADD_Role.roleName" class="input" />
         </el-form-item>
@@ -71,7 +71,7 @@
           <el-input v-model="ADD_Role.roleKey" autocomplete="off" class="input" />
         </el-form-item>
         <el-form-item label="角色顺序" :label-width="data.formLabelWidth" prop="roleSort">
-          <el-input-number v-model="ADD_Role.roleSort" :min="0"  class="input" />
+          <el-input-number v-model="ADD_Role.roleSort" :min="0" class="input" />
         </el-form-item>
         <el-form-item label="状态" label-width="50px" prop="status">
           <el-radio-group v-model="ADD_Role.status" class="ml-4">
@@ -79,10 +79,9 @@
             <el-radio label="1" size="large" value="1">停用</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单权限" label-width="78px"  class="infinite-list" style="overflow: auto;">
-          <el-tree :data="ADD_Role.dataTree" :props="defaultProps" show-checkbox  ref="treeRef" 
-          node-key="id"
-          @check="handleCheck"/>
+        <el-form-item label="菜单权限" label-width="78px" class="infinite-list" style="overflow: auto;">
+          <el-tree :data="ADD_Role.dataTree" :props="defaultProps" show-checkbox ref="treeRef" node-key="id"
+            @check="handleCheck" />
         </el-form-item>
         <el-form-item label="备注" label-width="50px" style="label-l">
           <el-input type="textarea" v-model="ADD_Role.remark" autocomplete="off" placeholder="请添加备注" />
@@ -95,9 +94,9 @@
         </span>
       </template>
     </el-dialog>
-     <!-- 编辑角色-------------------------------------------------------------- -->
-     <el-dialog v-model="play.upddialog" title="编辑角色" width="25%">
-      <el-form :model="data.addpost" :rules="rules" class="el-from-padding">
+    <!-- 编辑角色-------------------------------------------------------------- -->
+    <el-dialog v-model="play.upddialog" title="编辑角色" width="25%">
+      <el-form :model="UPD_Role" :rules="rules" class="el-from-padding">
         <el-form-item label="角色名称" :label-width="data.formLabelWidth" prop="roleName">
           <el-input autocomplete="off" v-model="UPD_Role.roleName" class="input" />
         </el-form-item>
@@ -105,7 +104,7 @@
           <el-input v-model="UPD_Role.roleKey" autocomplete="off" class="input" />
         </el-form-item>
         <el-form-item label="角色顺序" :label-width="data.formLabelWidth" prop="roleSort">
-          <el-input-number v-model="UPD_Role.roleSort" :min="0"  class="input" />
+          <el-input-number v-model="UPD_Role.roleSort" :min="0" class="input" />
         </el-form-item>
         <el-form-item label="状态" label-width="50px" prop="status">
           <el-radio-group v-model="UPD_Role.status" class="ml-4">
@@ -113,10 +112,9 @@
             <el-radio label="1" size="large" value="1">停用</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单权限" label-width="78px"  class="infinite-list">
-          <el-tree :data="ADD_Role.dataTree" :props="defaultProps" show-checkbox  ref="treeRef" 
-          node-key="id"
-          @check="handleCheck"/>
+        <el-form-item label="菜单权限" label-width="78px" class="infinite-list">
+          <el-tree :data="ADD_Role.dataTree" :props="defaultProps" show-checkbox ref="treeRef" node-key="id"
+            @check="handleCheck" />
         </el-form-item>
         <el-form-item label="备注" label-width="50px" style="label-l">
           <el-input type="textarea" v-model="UPD_Role.remark" autocomplete="off" placeholder="请添加备注" />
@@ -133,36 +131,38 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref,watch } from 'vue';
-import { roleListApi,treeselectAPI,addroleAPI,updroleAPI } from '@/requert/system/role.js'
+import { onMounted, reactive, ref } from 'vue';
+import { roleListApi, treeselectAPI, addroleAPI, updroleAPI } from '@/requert/system/role.js'
 import { ElMessage, ElMessageBox } from 'element-plus';
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import axios from 'axios';
 import cookies from "vue-cookies";
-const token=cookies.get('token')
+const token = cookies.get('token')
 const data = reactive({
   role_List: [],
   activeValue: '0',
   inactiveValue: '1',
   changeSwitch: '',
   switchValue: '',
-  
+
 })
 const allChecked = ref();
-const disabled = ref()
+const disabled = ref(true)
 const from = reactive({
   roleName: '',
   roleKey: '',
   status: '0',
   params: '',
 })
-const play=reactive({
-  adddialog:false,
-  upddialog:true
+const play = reactive({
+  adddialog: false,
+  upddialog: false
 })
-const treeRef=ref('null')
-const SelectID=ref([])
+const treeRef = ref('null')
+const SelectID = ref([])
 const ADD_Role = reactive({
-  dataTree:[],
+  dataTree: [],
   deptCheckStrictly: true,
   deptIds: [],
   menuCheckStrictly: true,
@@ -170,13 +170,14 @@ const ADD_Role = reactive({
   remark: '',
   roleKey: "",
   roleName: "",
-  roleSort:0,
+  roleSort: 0,
   status: "0",
 })
 
 const UPD_Role = reactive({
-  dataTree:[],
-  checkedKeys:[],
+  ids: '',
+  dataTree: [],
+  checkedKeys: [],
   deptCheckStrictly: true,
   deptIds: [],
   menuCheckStrictly: true,
@@ -184,8 +185,9 @@ const UPD_Role = reactive({
   remark: '',
   roleKey: "",
   roleName: "",
-  roleSort:0,
+  roleSort: 0,
   status: "0",
+  createTime:''
 })
 const defaultProps = {
   children: 'children',
@@ -194,21 +196,19 @@ const defaultProps = {
 const rules = {
   roleName: [
     { required: true, message: "请输入角色名称", trigger: "blur" },
-    { min: 1, max: 20, message: "Length should be 1 to 5", trigger: "blur" },
   ],
   roleKey: [
     { required: true, message: "请输入权限字符", trigger: "blur" },
-    { min: 1, max: 20, message: "Length should be 1 to 5", trigger: "blur" },
   ],
   roleSort: [
     { required: true, message: "请选择排序", trigger: "blur" },
-    { min: 1, max: 5, message: "Length should be 1 to 5", trigger: "blur" },
   ],
 };
 onMounted(() => {
   list()
-  treeselectAPI().then(res=>{
-    ADD_Role.dataTree= res.data.data
+  dateValue()
+  treeselectAPI().then(res => {
+    ADD_Role.dataTree = res.data.data
   })
 })
 const onSelect = () => {
@@ -232,142 +232,198 @@ const onSelect = () => {
 const changeTime = () => {
 
 }
-const selChange=(val)=>{
-val.map(item=>{
-  SelectID.value.push(item.roleId)
-})
-console.log( SelectID.value);
-
+const selChange = (val) => {
+  if (val.length != 1) {
+    disabled.value = true
+  } else {
+    disabled.value = false
+    val.map(item => {
+     SelectID.value.push(item.roleId)
+     UPD_Role.ids=item.roleId
+    })
+  }
 }
 const handleDaochu = () => {
-
+// 创建一个workbook
+const workbook=XLSX.utils.book_new()
+ // 导出数据
+ const worksheet= XLSX.utils.json_to_sheet(data.role_List)
+ XLSX.utils.book_append_sheet(workbook,worksheet, "Sheet 1")
 }
 const delPost = () => {
 
 }
-const deleteRow=(row)=>{
+const deleteRow = (row) => {
   ElMessageBox.confirm(
     '系统提示',
     '删除角色操作',
-    {  
-      confirmButtonText:'确定',
-      cancelButtonText:'取消',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
       type: 'warning',
       draggable: true,
     }
-  ).then(()=>{
-     axios({
-    url:'https://www.cp-mes.cn/prod-api/system/role/' + row.roleId,
-    method:'delete',
-    headers:{
-      Authorization: "Bearer " + token,
-    }
-  }).then(res=>{ 
-    if(res.data.code==200){
-      data.role_List = res.data.rows
-      ElMessage.success('删除成功')
-      list()
-    }else{
-      ElMessage.error(res.data.msg)
-    }
-  })
+  ).then(() => {
+    axios({
+      url: 'https://www.cp-mes.cn/prod-api/system/role/' + row.roleId,
+      method: 'delete',
+      headers: {
+        Authorization: "Bearer " + token,
+      }
+    }).then(res => {
+      if (res.data.code == 200) {
+        data.role_List = res.data.rows
+        ElMessage.success('删除成功')
+        list()
+      } else {
+        ElMessage.error(res.data.msg)
+      }
+    })
   })
 }
-const updPost = () => {
-  play.upddialog=true
-  treeData()
-}
+
 
 const selectALL = () => {
 
 }
 // 获取选中的数据
-const handleCheck=()=>{
-  const list=[]
-  list.value=treeRef.value?.getCheckedNodes(false) || [];
-  list.value.forEach(item=>{
+const handleCheck = () => {
+  const list = []
+  list.value = treeRef.value?.getCheckedNodes(false) || [];
+  list.value.forEach(item => {
     ADD_Role.menuIds.push(item.id)
   })
 }
 //tree数据
-const treeData=()=>{
-  treeselectAPI().then(res=>{
-    ADD_Role.treeselect= res.data.data 
+const treeData = () => {
+  treeselectAPI().then(res => {
+    ADD_Role.treeselect = res.data.data
   })
 }
 //回显
-const checkChange=async()=>{
+const checkChange = async () => {
   treeRef.value?.setCheckedKeys(UPD_Role.checkedKeys)
 }
 const addPost = () => {
-  play.adddialog=true
+  play.adddialog = true
   treeData()
 }
-const updateRow=async(row)=>{
-  checkChange()
-  play.upddialog=true
-  UPD_Role.menuIds=row.menuIds
-  UPD_Role.remark=row.remark
-  UPD_Role.roleKey=row.roleKey
-  UPD_Role.roleName=row.roleName
-  UPD_Role.roleSort=row.roleSort
-  UPD_Role.status=row.status
-  
-    axios({
-    url:'https://www.cp-mes.cn/prod-api/system/menu/roleMenuTreeselect/' + row.roleId,
-    method:'get',
-    headers:{
+const updPost = async () => {
+  play.upddialog = true
+  axios({
+    url: 'https://www.cp-mes.cn/prod-api/system/role/' + SelectID.value,
+    headers: {
       Authorization: "Bearer " + token,
     }
-  }).then(res=>{ 
-    UPD_Role.checkedKeys=res.data.data.checkedKeys
+  }).then(res => {
+    UPD_Role.menuIds = res.data.data.menuIds
+    UPD_Role.remark = res.data.data.remark
+    UPD_Role.roleKey = res.data.data.roleKey
+    UPD_Role.roleName = res.data.data.roleName
+    UPD_Role.roleSort = res.data.data.roleSort
+    UPD_Role.status = res.data.data.status
+    UPD_Role.createTime=res.data.data.createTime
   })
- 
+  axios({
+    url: 'https://www.cp-mes.cn/prod-api/system/menu/roleMenuTreeselect/' + SelectID.value,
+    method: 'get',
+    headers: {
+      Authorization: "Bearer " + token,
+    }
+  }).then(res => {
+    UPD_Role.checkedKeys = res.data.data.checkedKeys
+    checkChange()
+  })
+
   treeData()
- 
 }
-const updSubmit=()=>{
+const updateRow = async (row) => {
+  UPD_Role.ids=row.roleId
+  play.upddialog = true
+  UPD_Role.menuIds = row.menuIds
+  UPD_Role.remark = row.remark
+  UPD_Role.roleKey = row.roleKey
+  UPD_Role.roleName = row.roleName
+  UPD_Role.roleSort = row.roleSort
+  UPD_Role.status = row.status
+  UPD_Role.createTime=row.createTime
+  axios({
+    url: 'https://www.cp-mes.cn/prod-api/system/menu/roleMenuTreeselect/' + row.roleId,
+    method: 'get',
+    headers: {
+      Authorization: "Bearer " + token,
+    }
+  }).then(res => {
+    UPD_Role.checkedKeys = res.data.data.checkedKeys
+    checkChange()
+  })
+  treeData()
+
+}
+const dateValue=()=>{
+  const date=new Date()
+  const y=date.getFullYear()
+  const w=date.getMonth()+1
+  const d=date.getDate()
+
+  const h=date.getHours()>=10? date.getHours(): '0'+date.getHours()
+  const m=date.getMinutes()>=10? date.getMinutes():' 0'+date.getMinutes()
+  const s=date.getSeconds()>=10? date.getSeconds(): '0'+date.getSeconds()
+  return y+'-'+ w + '-' + d+' '+h + ':'+ m+':'+s
+}
+const updSubmit = () => {
   updroleAPI({
-  deptCheckStrictly: true,
-  deptIds: [],
-  menuCheckStrictly: true,
-  menuIds:ADD_Role.menuIds,
-  remark: ADD_Role.remark,
-  roleKey:ADD_Role.roleKey,
-  roleName:ADD_Role.roleName,
-  roleSort:ADD_Role.roleSort,
-  status:ADD_Role.status,
-  }).then(res=>{
-    if(res.data.code==200){
-      play.adddialog=false
+    admin: false,
+    createBy: "18000000000",
+    createTime: UPD_Role.createTime,
+    dataScope: "1",
+    delFlag: "0",
+    deptCheckStrictly: true,
+    deptIds: null,
+    flag: false,
+    menuCheckStrictly: true,
+    menuIds: UPD_Role.checkedKeys,
+    remark: UPD_Role.remark,
+    roleId: UPD_Role.ids,
+    roleKey: UPD_Role.roleKey,
+    roleName: UPD_Role.roleName,
+    roleSort: UPD_Role.roleSort,
+    status: UPD_Role.status,
+    tenantId: "243924",
+    updateBy: "18000000000",
+    updateTime: dateValue(),
+  }).then(res => {
+    if (res.data.code == 200) {
+      play.adddialog = false
       data.role_List = res.data.rows
+      ElMessage.success('修改成功')
       list()
-    }else{
+    } else {
       ElMessage.error(res.data.msg)
     }
-   
+
   })
 }
-const addSubmit=()=>{
+const addSubmit = () => {
   addroleAPI({
-  deptCheckStrictly: true,
-  deptIds: [],
-  menuCheckStrictly: true,
-  menuIds:ADD_Role.menuIds,
-  remark: ADD_Role.remark,
-  roleKey:ADD_Role.roleKey,
-  roleName:ADD_Role.roleName,
-  roleSort:ADD_Role.roleSort,
-  status:ADD_Role.status,
-  }).then(res=>{
-    if(res.data.code==200){
-      play.adddialog=false
+    deptCheckStrictly: true,
+    deptIds: [],
+    menuCheckStrictly: true,
+    menuIds: ADD_Role.menuIds,
+    remark: ADD_Role.remark,
+    roleKey: ADD_Role.roleKey,
+    roleName: ADD_Role.roleName,
+    roleSort: ADD_Role.roleSort,
+    status: ADD_Role.status,
+  }).then(res => {
+    if (res.data.code == 200) {
+      play.adddialog = false
       data.role_List = res.data.rows
       list()
-    }else{
+    } else {
       ElMessage.error(res.data.msg)
     }
-   
+
   })
 }
 const beforeChange = () => {
@@ -421,8 +477,9 @@ const reset = () => {
   padding: 0;
   margin: 0;
   list-style: none;
-  overflow:auto
+  overflow: auto
 }
+
 .infinite-list .infinite-list-item {
   display: flex;
   align-items: center;
@@ -432,9 +489,11 @@ const reset = () => {
   margin: 10px;
   color: var(--el-color-primary);
 }
-.infinite-list .infinite-list-item + .list-item {
+
+.infinite-list .infinite-list-item+.list-item {
   margin-top: 10px;
 }
+
 .el-from-padding {
   padding: 30px 20px;
 }
