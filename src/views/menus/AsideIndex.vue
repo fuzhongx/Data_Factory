@@ -49,7 +49,7 @@
               style="color: #fff"
             ></svg-icon>
           <template #title>
-            <span>{{items.children[0].meta&&items.children[0].meta.title}}</span>
+            <span>{{$t(items.children[0].meta&&items.children[0].meta.title)}}</span>
           </template>
         </el-menu-item>
 
@@ -65,7 +65,7 @@
               class="svg-margin-r-20"
               style="color: #fff"
             ></svg-icon>
-            <span>{{items.meta&&items.meta.title}}</span>
+            <span>{{$t(items.meta&&items.meta.title)}}</span>
           </template>
           <template v-if="items.children">
             <template v-for="childs in items.children" :key="childs">
@@ -75,7 +75,7 @@
                   class="svg-margin-r-20"
                   style="color: #fff"
                 ></svg-icon>
-                {{childs.meta.title}}</el-menu-item
+                {{$t(childs.meta.title)}}</el-menu-item
               >
             </template>
           </template>

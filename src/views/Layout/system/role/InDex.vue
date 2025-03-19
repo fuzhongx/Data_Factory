@@ -54,8 +54,16 @@
             <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">
               删除
             </el-button>
-            <el-button link type="primary" size="small" @click.prevent="mostRow(scope.row)">
-              更多
+            <el-button link type="primary" size="small">
+              <el-dropdown>
+                <span class="el-dropdown-link">更多</span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click.prevent='dataPower(scope.row)'>数据权限</el-dropdown-item>
+                    <el-dropdown-item>分配用户</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </el-button>
           </template>
         </el-table-column>
@@ -127,6 +135,33 @@
         </span>
       </template>
     </el-dialog>
+    <!-- 分配权限 -->
+    <el-dialog v-model="play.codedialog" title="分配权限" width="25%">
+      <el-form :model="UPD_Role" :rules="rules" class="el-from-padding">
+        <el-form-item label="角色名称" :label-width="data.formLabelWidth" prop="roleName">
+          <el-input autocomplete="off" v-model="Quan_xian.roleName" class="input" />
+        </el-form-item>
+        <el-form-item label="字符权限" :label-width="data.formLabelWidth" prop="roleKey">
+          <el-input v-model="Quan_xian.roleKey" autocomplete="off" class="input" />
+        </el-form-item>
+        <el-form-item label="权限范围" :label-width="data.formLabelWidth" prop="roleSort">
+          <el-select v-model="Quan_xian.dataScope">
+          <el-option label="全部数据权限" value="1" />
+          <el-option label="自定义数据权限" value="2" />
+          <el-option label="本部门数据权限" value="3" />
+          <el-option label="本部门内及以下数据权限" value="4" />
+          <el-option label="仅本人数据权限" value="5" />
+      </el-select>
+        </el-form-item>
+       
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button class="tav_btn" @click="codeSubmit">确认</el-button>
+          <el-button @click="play.codedialog = false"> 取消 </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,8 +192,15 @@ const from = reactive({
 })
 const play = reactive({
   adddialog: false,
-  upddialog: false
+  upddialog: false,
+  codedialog:true
 })
+const Quan_xian=reactive({
+  roleKey: "",
+  roleName: "",
+  dataScope:''
+})
+const delRoleID = ref(null)
 const treeRef = ref('null')
 const SelectID = ref([])
 const ADD_Role = reactive({
@@ -187,7 +229,7 @@ const UPD_Role = reactive({
   roleName: "",
   roleSort: 0,
   status: "0",
-  createTime:''
+  createTime: ''
 })
 const defaultProps = {
   children: 'children',
@@ -233,25 +275,64 @@ const changeTime = () => {
 
 }
 const selChange = (val) => {
+  delRoleID.value = val.map(item => {
+    return item.roleId
+  })
   if (val.length != 1) {
     disabled.value = true
   } else {
     disabled.value = false
     val.map(item => {
-     SelectID.value.push(item.roleId)
-     UPD_Role.ids=item.roleId
+      SelectID.value.push(item.roleId)
+      UPD_Role.ids = item.roleId
     })
   }
 }
 const handleDaochu = () => {
-// 创建一个workbook
-const workbook=XLSX.utils.book_new()
- // 导出数据
- const worksheet= XLSX.utils.json_to_sheet(data.role_List)
- XLSX.utils.book_append_sheet(workbook,worksheet, "Sheet 1")
-}
-const delPost = () => {
+  // 创建一个workbook
+  const workbook = XLSX.utils.book_new();
+  // 导出数据
+  const worksheet = XLSX.utils.json_to_sheet(data.role_List);
+  XLSX.utils.book_append_sheet(workbook, worksheet, "角色列表");
 
+  // 将workbook转为二进制数据
+  const excelData = XLSX.write(workbook, {
+    type: "array",
+    bookType: "xlsx",
+  });
+  // 创建blob对象并保存excel文件
+  const blob = new Blob([excelData], { type: "application/octet-stream" });
+  // 设置导出文件名字
+  saveAs(blob, "角色列表.xlsx");
+};
+
+const delPost = () => {
+  ElMessageBox.confirm(
+    '系统提示',
+    '删除角色操作',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+      draggable: true,
+    }
+  ).then(() => {
+    axios({
+      url: 'https://www.cp-mes.cn/prod-api/system/role/' + delRoleID.value,
+      method: 'delete',
+      headers: {
+        Authorization: "Bearer " + token,
+      }
+    }).then(res => {
+      if (res.data.code == 200) {
+        data.role_List = res.data.rows
+        ElMessage.success('删除成功')
+        list()
+      } else {
+        ElMessage.error(res.data.msg)
+      }
+    })
+  })
 }
 const deleteRow = (row) => {
   ElMessageBox.confirm(
@@ -281,7 +362,22 @@ const deleteRow = (row) => {
     })
   })
 }
-
+const dataPower=(row)=>{
+play.codedialog=true
+ axios({
+    url:'https://www.cp-mes.cn/prod-api/system/role/' +row.roleId,
+    method:'get',
+    headers:{
+      Authorization: "Bearer " + token,
+    }
+  }).then(res=>{
+    Quan_xian.roleName= res.data.data.roleName
+    Quan_xian.roleKey=res.data.data.roleKey
+    Quan_xian.dataScope=res.data.data.dataScope
+  })
+ 
+  
+}
 
 const selectALL = () => {
 
@@ -322,7 +418,7 @@ const updPost = async () => {
     UPD_Role.roleName = res.data.data.roleName
     UPD_Role.roleSort = res.data.data.roleSort
     UPD_Role.status = res.data.data.status
-    UPD_Role.createTime=res.data.data.createTime
+    UPD_Role.createTime = res.data.data.createTime
   })
   axios({
     url: 'https://www.cp-mes.cn/prod-api/system/menu/roleMenuTreeselect/' + SelectID.value,
@@ -338,7 +434,7 @@ const updPost = async () => {
   treeData()
 }
 const updateRow = async (row) => {
-  UPD_Role.ids=row.roleId
+  UPD_Role.ids = row.roleId
   play.upddialog = true
   UPD_Role.menuIds = row.menuIds
   UPD_Role.remark = row.remark
@@ -346,7 +442,7 @@ const updateRow = async (row) => {
   UPD_Role.roleName = row.roleName
   UPD_Role.roleSort = row.roleSort
   UPD_Role.status = row.status
-  UPD_Role.createTime=row.createTime
+  UPD_Role.createTime = row.createTime
   axios({
     url: 'https://www.cp-mes.cn/prod-api/system/menu/roleMenuTreeselect/' + row.roleId,
     method: 'get',
@@ -360,16 +456,16 @@ const updateRow = async (row) => {
   treeData()
 
 }
-const dateValue=()=>{
-  const date=new Date()
-  const y=date.getFullYear()
-  const w=date.getMonth()+1
-  const d=date.getDate()
+const dateValue = () => {
+  const date = new Date()
+  const y = date.getFullYear()
+  const w = date.getMonth() + 1
+  const d = date.getDate()
 
-  const h=date.getHours()>=10? date.getHours(): '0'+date.getHours()
-  const m=date.getMinutes()>=10? date.getMinutes():' 0'+date.getMinutes()
-  const s=date.getSeconds()>=10? date.getSeconds(): '0'+date.getSeconds()
-  return y+'-'+ w + '-' + d+' '+h + ':'+ m+':'+s
+  const h = date.getHours() >= 10 ? date.getHours() : '0' + date.getHours()
+  const m = date.getMinutes() >= 10 ? date.getMinutes() : ' 0' + date.getMinutes()
+  const s = date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds()
+  return y + '-' + w + '-' + d + ' ' + h + ':' + m + ':' + s
 }
 const updSubmit = () => {
   updroleAPI({
@@ -472,6 +568,15 @@ const reset = () => {
 </script>
 
 <style lang="scss" scoped>
+.el-dropdown-link{
+  outline: 0;
+  color: #409eff;
+  font-size: 12px;
+}
+.el-dropdown-lin:hover{
+  color:rgb(149, 187, 224)
+}
+
 .infinite-list {
   height: 300px;
   padding: 0;
