@@ -138,22 +138,31 @@
     <!-- 分配权限 -->
     <el-dialog v-model="play.codedialog" title="分配权限" width="25%">
       <el-form :model="UPD_Role" :rules="rules" class="el-from-padding">
-        <el-form-item label="角色名称" :label-width="data.formLabelWidth" prop="roleName">
-          <el-input autocomplete="off" v-model="Quan_xian.roleName" class="input" />
+        <el-form-item label="角色名称" :label-width="data.formLabelWidth">
+          <el-input autocomplete="off" v-model="Quan_xian.roleName" class="input" disabled />
         </el-form-item>
-        <el-form-item label="字符权限" :label-width="data.formLabelWidth" prop="roleKey">
-          <el-input v-model="Quan_xian.roleKey" autocomplete="off" class="input" />
+        <el-form-item label="字符权限" :label-width="data.formLabelWidth">
+          <el-input v-model="Quan_xian.roleKey" autocomplete="off" class="input" disabled />
         </el-form-item>
         <el-form-item label="权限范围" :label-width="data.formLabelWidth" prop="roleSort">
           <el-select v-model="Quan_xian.dataScope">
-          <el-option label="全部数据权限" value="1" />
-          <el-option label="自定义数据权限" value="2" />
-          <el-option label="本部门数据权限" value="3" />
-          <el-option label="本部门内及以下数据权限" value="4" />
-          <el-option label="仅本人数据权限" value="5" />
-      </el-select>
+            <el-option label="全部数据权限" value="1" />
+            <el-option label="自定义数据权限" value="2" />
+            <el-option label="本部门数据权限" value="3" />
+            <el-option label="本部门内及以下数据权限" value="4" />
+            <el-option label="仅本人数据权限" value="5" />
+          </el-select>
+          <div  v-show="Quan_xian.dataScope==2">
+             <el-checkbox v-model="treeCheacked.checkedOpen" label="展开/折叠" size="large" @change="handeOpen"/>
+             <el-checkbox v-model="treeCheacked.checkChangeALL" label="全选/全不选" size="large" @change="handleCheckAllChange "/>
+             <el-checkbox v-model="treeCheacked.check_strictlys" label="父子联动" size="large" @change="handleChecked" />
+
+            <el-tree :props="defaultProps"  node-key="id"  :default-expand-all='treeCheacked.checkedOpen' :check-strictly="treeCheacked.check_strictly"
+            show-checkbox :data="data.code_list"   :reserve-selection="true"/>
+          </div>
+         
         </el-form-item>
-       
+
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -180,7 +189,13 @@ const data = reactive({
   inactiveValue: '1',
   changeSwitch: '',
   switchValue: '',
-
+  code_list: []
+})
+const treeCheacked=reactive({
+  checkChangeALL:false,
+  checkedOpen:true,
+  check_strictly:false,
+  check_strictlys:true
 })
 const allChecked = ref();
 const disabled = ref(true)
@@ -193,12 +208,12 @@ const from = reactive({
 const play = reactive({
   adddialog: false,
   upddialog: false,
-  codedialog:true
+  codedialog: false
 })
-const Quan_xian=reactive({
+const Quan_xian = reactive({
   roleKey: "",
   roleName: "",
-  dataScope:''
+  dataScope: ''
 })
 const delRoleID = ref(null)
 const treeRef = ref('null')
@@ -270,7 +285,18 @@ const onSelect = () => {
     }
   })
 }
-
+const handleCheckAllChange=(val)=>{
+  treeCheacked.checkChangeALL=val
+}
+const handeOpen=(val)=>{
+  treeCheacked.checkedOpen=val
+  console.log(val);
+  
+}
+const handleChecked=(val)=>{
+  treeCheacked.check_strictly=val
+  console.log(val);
+}
 const changeTime = () => {
 
 }
@@ -362,21 +388,31 @@ const deleteRow = (row) => {
     })
   })
 }
-const dataPower=(row)=>{
-play.codedialog=true
- axios({
-    url:'https://www.cp-mes.cn/prod-api/system/role/' +row.roleId,
-    method:'get',
-    headers:{
+const dataPower = (row) => {
+  play.codedialog = true
+  axios({
+    url: 'https://www.cp-mes.cn/prod-api/system/role/' + row.roleId,
+    method: 'get',
+    headers: {
       Authorization: "Bearer " + token,
     }
-  }).then(res=>{
-    Quan_xian.roleName= res.data.data.roleName
-    Quan_xian.roleKey=res.data.data.roleKey
-    Quan_xian.dataScope=res.data.data.dataScope
+  }).then(res => {
+    Quan_xian.roleName = res.data.data.roleName
+    Quan_xian.roleKey = res.data.data.roleKey
+    Quan_xian.dataScope = res.data.data.dataScope
   })
- 
-  
+
+  axios({
+    url: 'https://www.cp-mes.cn/prod-api/system/role/deptTree/' + row.roleId,
+    method: 'get',
+    headers: {
+      Authorization: "Bearer " + token,
+    }
+  }).then(res => {
+    data.code_list = res.data.data.depts
+  })
+
+
 }
 
 const selectALL = () => {
@@ -568,13 +604,14 @@ const reset = () => {
 </script>
 
 <style lang="scss" scoped>
-.el-dropdown-link{
+.el-dropdown-link {
   outline: 0;
   color: #409eff;
   font-size: 12px;
 }
-.el-dropdown-lin:hover{
-  color:rgb(149, 187, 224)
+
+.el-dropdown-lin:hover {
+  color: rgb(149, 187, 224)
 }
 
 .infinite-list {
