@@ -43,7 +43,6 @@ export function checkRoleAPI(data){
         data:data
     })
 }
-
 export function dataScopeAPI(data){
     return service({
         url: "/system/role/dataScope",

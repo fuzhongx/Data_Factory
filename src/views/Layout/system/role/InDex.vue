@@ -152,15 +152,16 @@
             <el-option label="本部门内及以下数据权限" value="4" />
             <el-option label="仅本人数据权限" value="5" />
           </el-select>
-          <div  v-show="Quan_xian.dataScope==2">
-             <el-checkbox v-model="treeCheacked.checkedOpen" label="展开/折叠" size="large" @change="handeOpen"/>
-             <el-checkbox v-model="treeCheacked.checkChangeALL" label="全选/全不选" size="large" @change="handleCheckAllChange "/>
-             <el-checkbox v-model="treeCheacked.check_strictlys" label="父子联动" size="large" @change="handleChecked" />
-
-            <el-tree :props="defaultProps"  node-key="id"  :default-expand-all='treeCheacked.checkedOpen' :check-strictly="treeCheacked.check_strictly"
-            show-checkbox :data="data.code_list"   :reserve-selection="true"/>
+          <div v-show="Quan_xian.dataScope == 2">
+            <el-checkbox v-model="checkedOpen" label="展开/折叠" size="large" @change="handeOpen" />
+            <el-checkbox v-model="treeCheacked.checkChangeALL" label="全选/全不选" size="large"
+              @change="handleCheckAllChange" />
+            <el-checkbox v-model="treeCheacked.check_strictlys" label="父子联动" size="large" @change="handleChecked" />
+            <el-tree ref="treeRef" :props="defaultProps" node-key="id" :default-expand-all="checkedOpen"
+              :check-strictly="treeCheacked.check_strictly" show-checkbox :data="data.code_list" @check-change="FeiPEI"
+              :reserve-selection="true"   @check="handleCheck"/>
           </div>
-         
+
         </el-form-item>
 
       </el-form>
@@ -176,7 +177,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
-import { roleListApi, treeselectAPI, addroleAPI, updroleAPI } from '@/requert/system/role.js'
+import { roleListApi, treeselectAPI, addroleAPI, updroleAPI, dataScopeAPI } from '@/requert/system/role.js'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -191,12 +192,7 @@ const data = reactive({
   switchValue: '',
   code_list: []
 })
-const treeCheacked=reactive({
-  checkChangeALL:false,
-  checkedOpen:true,
-  check_strictly:false,
-  check_strictlys:true
-})
+
 const allChecked = ref();
 const disabled = ref(true)
 const from = reactive({
@@ -205,16 +201,15 @@ const from = reactive({
   status: '0',
   params: '',
 })
+/**
+ * @param{play}弹窗参数
+ */
 const play = reactive({
   adddialog: false,
   upddialog: false,
   codedialog: false
 })
-const Quan_xian = reactive({
-  roleKey: "",
-  roleName: "",
-  dataScope: ''
-})
+
 const delRoleID = ref(null)
 const treeRef = ref('null')
 const SelectID = ref([])
@@ -285,18 +280,55 @@ const onSelect = () => {
     }
   })
 }
-const handleCheckAllChange=(val)=>{
-  treeCheacked.checkChangeALL=val
+/**
+ * @param{treeCheacked} 权限多选，父子关联，展开、收缩参数
+ */
+const checkedOpen = ref(true)
+const treeCheacked = reactive({
+  checkChangeALL: false,
+  checkedOpen: true,
+  check_strictly: false,
+  check_strictlys: true
+})
+/**
+ * @param {handleCheckAllChange} tree全选事件
+ */
+
+const handleCheckAllChange = (val) => {
+  treeRef.value.data.map(item => {
+    if (val) {
+      item.children ? treeRef.value.setCheckedNodes(item.children) : treeRef.value.setCheckedNodes([])
+    } else {
+      treeRef.value.setCheckedNodes([])
+    }
+  })
 }
-const handeOpen=(val)=>{
-  treeCheacked.checkedOpen=val
-  console.log(val);
-  
+/**
+ * 
+ * @param{handeOpen} tree展开事件 
+ */
+const handeOpen = (val) => {
+  const nodes = treeRef.value?.store?.nodesMap;
+  if (val) {
+    Object.values(nodes).forEach(node => {
+      node.expanded = true;
+      if (node.childNodes.length) node.expand(); // 触发展开动画
+    });
+  } else {
+    Object.values(nodes).forEach(node => {
+      node.expanded = false;
+      node.collapse(); // 触发折叠动画
+    });
+  }
 }
-const handleChecked=(val)=>{
-  treeCheacked.check_strictly=val
-  console.log(val);
+/**
+ * 
+ * @param val 父子关联属性
+ */
+const handleChecked = (val) => {
+  treeCheacked.check_strictly = val ? false : true
 }
+
 const changeTime = () => {
 
 }
@@ -388,6 +420,24 @@ const deleteRow = (row) => {
     })
   })
 }
+/**
+ * @param{Quan_xian}权限参数参数
+ */
+ const Quan_xian = reactive({
+  QX_List:'',
+  roleKey: "",
+  roleName: "",
+  dataScope: '',
+  deptIds:[]
+})
+const FeiPEI=(val)=>{
+console.log(val);
+console.log( treeRef.value.getCurrentNode());
+}
+/**
+ * 
+ * @param row 数据权限
+ */
 const dataPower = (row) => {
   play.codedialog = true
   axios({
@@ -397,9 +447,10 @@ const dataPower = (row) => {
       Authorization: "Bearer " + token,
     }
   }).then(res => {
-    Quan_xian.roleName = res.data.data.roleName
-    Quan_xian.roleKey = res.data.data.roleKey
-    Quan_xian.dataScope = res.data.data.dataScope
+    Quan_xian.QX_List=res
+    Quan_xian.roleKey=res.data.data.roleKey
+    Quan_xian.roleName=res.data.data.roleName
+    Quan_xian.dataScope=res.data.data.dataScope
   })
 
   axios({
@@ -411,14 +462,48 @@ const dataPower = (row) => {
   }).then(res => {
     data.code_list = res.data.data.depts
   })
-
-
 }
+/**
+ * 分配权限提交
+ */
+const codeSubmit = () => {
+  dataScopeAPI({
+    admin: false,
+    createBy:Quan_xian.QX_List.createBy,
+    createTime: Quan_xian.QX_List.createTime,
+    dataScope:Quan_xian.dataScope,
+    delFlag:Quan_xian.QX_List.delFlag,
+    deptCheckStrictly:Quan_xian.QX_List.deptCheckStrictly,
+    deptIds:Quan_xian.deptIds,
+    flag: Quan_xian.QX_List.flag,
+    menuCheckStrictly: Quan_xian.QX_List.menuCheckStrictly,
+    menuIds: ADD_Role.menuIds,
+    remark: Quan_xian.QX_List.remark,
+    roleId: Quan_xian.QX_List.roleId,
+    roleKey: Quan_xian.QX_List.roleKey,
+    roleName:Quan_xian.QX_List.roleName,
+    roleSort:Quan_xian.QX_List.roleSort,
+    status:Quan_xian.QX_List.status,
+    tenantId: Quan_xian.QX_List.tenantId,
+    updateBy:Quan_xian.QX_List.updateBy,
+    updateTime:dateValue(),
+  }).then(res=>{
+    if(res.data.code==200){
+      data.role_List = res.data.rows
+      list()
+      ElMessage.success('修改成功')
+    }else{
+      ElMessage.success(res.data.msg)
+    }
 
+  })
+}
 const selectALL = () => {
 
 }
-// 获取选中的数据
+/**
+ * handleCheck获取选中的数据
+ */
 const handleCheck = () => {
   const list = []
   list.value = treeRef.value?.getCheckedNodes(false) || [];
@@ -432,7 +517,9 @@ const treeData = () => {
     ADD_Role.treeselect = res.data.data
   })
 }
-//回显
+/**
+ * 回显
+ * */
 const checkChange = async () => {
   treeRef.value?.setCheckedKeys(UPD_Role.checkedKeys)
 }
@@ -492,6 +579,9 @@ const updateRow = async (row) => {
   treeData()
 
 }
+/**
+ * @param {dateValue}获取当前时间
+ */
 const dateValue = () => {
   const date = new Date()
   const y = date.getFullYear()
@@ -584,6 +674,9 @@ const switchChane = () => {
 const getKey = (row) => {
   return row.id
 }
+/**
+ * list 数据列表
+ */
 const list = () => {
   roleListApi({
     pageNum: 1,
