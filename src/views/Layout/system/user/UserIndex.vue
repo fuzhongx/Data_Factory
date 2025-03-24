@@ -1,5 +1,5 @@
-<template>
-  1234
+<template> 
+分配用户
 </template>
 
 <script>

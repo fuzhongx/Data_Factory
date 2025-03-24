@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="animate__animated animate__fadeInLeft ">
     <el-form :inline="true" v-model="from" class="demo-form-inline">
       <el-form-item label="岗位编码">
         <el-input v-model="from.postCode" placeholder="请输入岗位编码" clearable class="input" />

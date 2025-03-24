@@ -3,7 +3,6 @@ import { getRouter } from "@/requert/getRouter/getRouter";
 export const fetchDynamicRoutes = async () => {
     try {
       getRouter().then(res=>{
-        console.log(res.data.data,9999);
         return  transformRoutes(res.data.data);
       })
       // return transformRoutes(response.data.data);
@@ -15,6 +14,11 @@ export const fetchDynamicRoutes = async () => {
 
 
 // 将后端数据转换为Vue Router需要的格式
+/**
+ * 
+ * @param {*} backendRoutes 后端获取Menu
+ * @returns 
+ */
 const transformRoutes = (backendRoutes) => {
     return backendRoutes.map(route => ({
       path: route.path,                                                         

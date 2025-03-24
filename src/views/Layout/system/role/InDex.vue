@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="animate__animated animate__fadeInLeft">
     <el-form :inline="true" v-model="from" class="demo-form-inline">
       <el-form-item label="角色编码">
         <el-input v-model="from.roleKey" placeholder="请输入角色编码" clearable class="input" />
@@ -60,7 +60,7 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item @click.prevent='dataPower(scope.row)'>数据权限</el-dropdown-item>
-                    <el-dropdown-item>分配用户</el-dropdown-item>
+                    <el-dropdown-item @click="fenUser(scope.row)">分配用户</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -183,7 +183,12 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from 'axios';
 import cookies from "vue-cookies";
+import{useRouter} from 'vue-router'
+const router=new useRouter()
 const token = cookies.get('token')
+/**
+ * data全局数据
+ */
 const data = reactive({
   role_List: [],
   activeValue: '0',
@@ -194,7 +199,11 @@ const data = reactive({
 })
 
 const allChecked = ref();
+/**
+ * disabled删除禁用按钮
+ */
 const disabled = ref(true)
+
 const from = reactive({
   roleName: '',
   roleKey: '',
@@ -263,6 +272,13 @@ onMounted(() => {
     ADD_Role.dataTree = res.data.data
   })
 })
+/**
+ * 分配用户
+ */
+const fenUser=(row)=>{
+console.log(row);
+router.push('/userIndex')
+}
 const onSelect = () => {
   roleListApi({
     pageNum: 1,

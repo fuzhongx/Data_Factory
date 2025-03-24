@@ -82,7 +82,7 @@
         </el-sub-menu>
       </template>
     </el-menu>
-    <div v-loading.fullscreen.lock="data.isLoading"></div>
+    <!-- <div v-loading.fullscreen.lock="data.isLoading"></div> -->
   </div>
 </template>
 

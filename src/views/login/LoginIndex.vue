@@ -129,14 +129,19 @@ const pasdFull = () => {
                 password: LoginForm.password,
                 uuid: LoginForm.captchaKey,
             }).then(res => {
-                
-                cookies.set('token', res.data.data.token)
-                localStorage.setItem('token', res.data.data.token)
-                cookies.set('refreshToken',res.data.data.refreshToken)
+                if(res.data.code==200){
+                cookies.set('token',res.data.data.token)
                 localStorage.removeItem('selectKey')
                 localStorage.setItem('selectKey','dashboard')
                 router.push('/index')
                 ElMessage.success('登录成功');
+                LoginForm.loading = false
+                }else{
+                    LoginForm.loading = false
+                    KeyWord()
+                    ElMessage.error(res.data.msg)
+                }
+               
             })
                 .catch(error => {
                     ElMessage.error(error);
@@ -157,14 +162,19 @@ const submitForm = async (formEl) => {
                 password: LoginForm.password,
                 uuid: LoginForm.captchaKey,
             }).then(res => {
-                console.log(res,'login');
+                if(res.data.code==200){
                 cookies.set('token',res.data.data.token)
                 localStorage.removeItem('selectKey')
                 localStorage.setItem('selectKey','dashboard')
                 router.push('/index')
-                fetchDynamicRoutes()
                 ElMessage.success('登录成功');
                 LoginForm.loading = false
+                }else{
+                    LoginForm.loading = false
+                    KeyWord()
+                    ElMessage.error(res.data.msg)
+                }
+               
             })
                 .catch(error => {
                     ElMessage.error(error);
@@ -173,7 +183,7 @@ const submitForm = async (formEl) => {
             
         }
     })
-
+  await  fetchDynamicRoutes()
 }
 
 </script>

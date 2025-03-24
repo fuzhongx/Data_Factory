@@ -3,62 +3,37 @@ import { getRouter } from "@/requert/getRouter/getRouter";
 import nprogress from "nprogress";
 import cookies from "vue-cookies";
 import { ElMessage } from "element-plus";
+import staticRoutes from '@/router/index'
+/**
+ * 静态路由路由
+ */
 
-const staticRoutes  = [
-  {
-    path: "/",
-    component: () => import("@/views/login/LoginIndex.vue"),
-    hidden: false,
-    meta: {
-      icon: "dashboard",
-      link: null,
-      noCache: false,
-      title: "登录页",
-    }
-  },
-  {
-    path: "/index",
-    component: () => import("@/layout/LayoutIndex.vue"),
-    hidden: false,
-    meta: {
-      icon: "index",
-      link: null,
-      noCache: false,
-      title: "主页",
-    },
-    children: [
-      {
-        path: "/homeindex",
-        component: () => import("@/views/menus/HomeIndex.vue"),
-        hidden: false,
-        meta: {
-          icon: "dashboard",
-          link: null,
-          noCache: false,
-          title: "首页",
-        },
-      },
-    ],
-  },
-];
 // const selectRouter=localStorage.getItem('selectKey')
-async function fetchDynamicRoutes() {
+ async function fetchDynamicRoutes() {
   try {
     const res=await getRouter()
-    console.log(res.data.data,666);
     formatRoutes(res.data.data)
-    console.log(formatRoutes(res.data.data),22);
     const dynamicRoutes = formatRoutes(res.data.data)
     dynamicRoutes.forEach(route => router.addRoute(route))
-   
+
     // 添加后跳转到首页或其他页面
-    router.push('/')
+    router.push(localStorage.getItem('selectKey'))
   } catch (error) {
-    console.error('获取路由失败:', error)
+    router.push('/')
+    ElMessage.error('获取路由失败,请重新登录:', error)
   }
 }
+// 在需要的地方调用，如登录成功后
+fetchDynamicRoutes()
+
+/**
+ * 
+ * @param {*} val 后端返回Menu
+ * @returns 转化为Router需要的格式
+ */
 function formatRoutes(val){
  return val.map((route) => {
+    //截取相应的字符转化大小写
     let com=route.component.substring(route.component.length-5,route.component.length-4)
     let coms=route.component.substring(route.component.length-3,route.component.length-2)
     let comValue=com.toUpperCase()
@@ -73,14 +48,12 @@ function formatRoutes(val){
         hidden: route.hidden,
         meta: route.meta,
         children: route.children ? formatRoutes(route.children) : [],
-
       }
    
   });
 
 }
-// 在需要的地方调用，如登录成功后
-fetchDynamicRoutes()
+
 
 const router = createRouter({
   mode: "history",
@@ -109,4 +82,5 @@ router.afterEach(() => {
   //路由跳转结束之后 进度条结束
   nprogress.done();
 });
-export default router;
+
+export default  router;

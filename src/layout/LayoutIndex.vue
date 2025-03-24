@@ -22,13 +22,13 @@ import { ElLoading } from 'element-plus';
 let loadingInstance = ElLoading.service({
   lock: true,
   text: 'Loading...',
-  background: 'rgba(0, 0, 0, 0.7)'
+  background: 'rgba(0, 0, 0, 0.4)'
 });
  
 // 模拟异步操作，1000 毫秒后取消 Loading
 setTimeout(() => {
     loadingInstance.close();
-  }, 1500);
+  }, 1000);
 </script>
 
 <style lang="scss" scoped>

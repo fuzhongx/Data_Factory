@@ -176,6 +176,7 @@ const changeLang = (item) => {
   locale.value = item;
   bus.emit("lange", appContext.$i18n.locale);
 };
+
 const handerCollapsed = () => {
   isCollapse.value = !isCollapse.value;
   bus.emit("eventBus", isCollapse.value);
@@ -184,12 +185,18 @@ const nav = computed(() => {
   let routes = route.matched;
   return routes;
 });
+
+/**
+ * 个人中心
+ */
+
 const passion = () => {
   // window.location.href = "/pscenter";
   stroe.dispatch("ADD_TAGS", data.possions);
   localStorage.setItem("selectKey", data.possions.routePath);
   router.push("/pscenter");
 };
+
 const reset = () => {
   router.push("/");
   cookie.remove("token");

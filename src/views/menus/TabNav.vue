@@ -54,27 +54,29 @@ const handleClose = (tag) => {
   tags.value.forEach((e) => {
       router.push(e.path) 
       activeIndex.value=e.meta.title
-      console.log(e);
-      
   });
-//  if(tags.value.length==0){
-//   tags.value.push( data.possions)
-//   // stroe.dispatch("ADD_TAGS", data.possions);
-//   document.getElementsByClassName('mx-1').style.background= '#4080ff'
-//  }
  
 }; 
 </script>
 
 <style scoped>
+
+.tag-yuans{
+  display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin-bottom: 1px;
+}
 .tag-yuan{
   display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  border:1px solid #aaa7a7;
-  background-color: #fff;
-  margin: 2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid #f1ebeb;
+    margin-bottom: 1px;
 }
 .svg-margin-r-20{
   margin-right: 5px;
@@ -101,7 +103,7 @@ const handleClose = (tag) => {
   color: rgb(255, 253, 253);
   cursor: pointer;
   background: #4080ff;
-  --el-tag-border-radius: 0px;
+  --el-tag-border-radius: 3px;
   margin: 0 3px;
 }
 .down {
