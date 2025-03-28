@@ -118,7 +118,7 @@ import cookie from "vue-cookies";
 import bus from "@/ulit/Bus.js";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
-import { FullScreen, ExitFullScreen } from "@element-plus/icons-vue";
+// import { FullScreen, exitFullscreen } from "@element-plus/icons-vue";
 
 const stroe = useStore();
 const isFullscreen = ref(false);

@@ -17,12 +17,13 @@ const staticRoutes  = [
         hidden: false,
       },
       {
+        component: "@/views/Layout/system/fenpei/InDex",
+        meta: { title: "分配用户", icon: "build", noCache: true, link: null },
+        name: "userIndex",
         path: "/userIndex",
-        component: () => import("@/views/Layout/system/user/UserIndex.vue"),
-        hidden: false,
-        meta: {icon: "dashboard",link: null,noCache: false,title: "分配用户"},
-      },
+      }
+     
     ],
-  },
+  }
 ];
 export default staticRoutes;

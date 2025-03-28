@@ -1,5 +1,5 @@
 <template>
-  <div class="animate__animated animate__fadeInLeft ">
+  <div class="animate__animated animate__fadeInLeft " style="height: 100%;">
     <el-form :inline="true" v-model="from" class="demo-form-inline">
       <el-form-item label="岗位编码">
         <el-input v-model="from.postCode" placeholder="请输入岗位编码" clearable class="input" />
@@ -51,7 +51,10 @@
         </el-table-column>
       </el-table>
     </div>
-    <!-------------编辑------------ -->
+   
+    <!------------
+      -编辑-
+    --------- -->
     <el-dialog v-model="play.upddialog" title="编辑岗位" width="25%">
       <el-form :model="data.addpost" style="padding: 30px 20px" :rules="rules">
         <el-form-item label="岗位名称" :label-width="data.formLabelWidth" prop="postName">
@@ -81,7 +84,10 @@
       </template>
     </el-dialog>
 
-    <!-- ---------- 添加--------------- -->
+    <!-- -------
+     --- 添加--
+     ------------>
+     
     <el-dialog v-model="play.adddialog" title="添加岗位" width="25%">
       <el-form :model="data.addpost" :rules="rules" class="el-from-padding">
         <el-form-item label="岗位编码" :label-width="data.formLabelWidth" prop="postCode">

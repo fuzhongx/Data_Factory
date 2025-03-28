@@ -126,9 +126,7 @@ const handleOpen = (key, keyPath) => {
   data.openKey = [keyPath];
   localStorage.setItem("opentKey", keyPath);
 };
-// const handleClose = (key, keyPath) => {
-//   console.log(key, keyPath);
-// };
+
 const handleMenuSelect = (index) => {
   // data.defaultMenu = [index];
   localStorage.setItem("selectKey",`${index}`);
@@ -175,9 +173,6 @@ onUnmounted(() => {
 .menu_hover:hover{
   background-color: rgb(13, 59, 132) !important;
 }
-// .menu_hover.is-active{
-//   background-color: rgb(13, 59, 132) !important;
-// }
 .is-active {
   color: #1670b6;
 }

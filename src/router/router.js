@@ -17,7 +17,12 @@ import staticRoutes from '@/router/index'
     dynamicRoutes.forEach(route => router.addRoute(route))
 
     // 添加后跳转到首页或其他页面
-    router.push(localStorage.getItem('selectKey'))
+    if(cookies.get('token')){
+      router.push(localStorage.getItem('selectKey'))
+    }else{
+      router.push('/')
+      ElMessage.error('登录过期,请重新登录:')
+  }
   } catch (error) {
     router.push('/')
     ElMessage.error('获取路由失败,请重新登录:', error)

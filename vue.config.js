@@ -15,7 +15,7 @@ module.exports = defineConfig({
       //   additionalData: `@use "~@/styles/main.scss"`
       // },
       scss: {
-        additionalData: `@import "~@/styles/main.scss";`
+        additionalData: `@use "~@/styles/main.scss";`
       }
     }
     },
@@ -49,8 +49,9 @@ module.exports = defineConfig({
     host:"localhost",//外部访问
     port:process.env.VUE_APP_PORT,
     client: {
-      overlay: false
+      overlay:true
     },
+   
     proxy: {
       [process.env.VUE_APP_FLAG]: {
          target:'https://api.youlai.tech/', // 目标API地址

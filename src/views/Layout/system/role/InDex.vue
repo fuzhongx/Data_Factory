@@ -1,5 +1,5 @@
 <template>
-  <div class="animate__animated animate__fadeInLeft">
+  <div class="animate__animated animate__fadeInLeft" style="height: 100%;">
     <el-form :inline="true" v-model="from" class="demo-form-inline">
       <el-form-item label="角色编码">
         <el-input v-model="from.roleKey" placeholder="请输入角色编码" clearable class="input" />
@@ -159,7 +159,7 @@
             <el-checkbox v-model="treeCheacked.check_strictlys" label="父子联动" size="large" @change="handleChecked" />
             <el-tree ref="treeRef" :props="defaultProps" node-key="id" :default-expand-all="checkedOpen"
               :check-strictly="treeCheacked.check_strictly" show-checkbox :data="data.code_list" @check-change="FeiPEI"
-              :reserve-selection="true"   @check="handleCheck"/>
+              :reserve-selection="true" @check="handleCheck" />
           </div>
 
         </el-form-item>
@@ -183,8 +183,8 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from 'axios';
 import cookies from "vue-cookies";
-import{useRouter} from 'vue-router'
-const router=new useRouter()
+import { useRouter } from 'vue-router'
+const router = new useRouter()
 const token = cookies.get('token')
 /**
  * data全局数据
@@ -219,6 +219,31 @@ const play = reactive({
   codedialog: false
 })
 
+import { useStore } from 'vuex';
+const stroe=useStore()
+const CODE_ROUTER = reactive(
+  {   
+    name: "userIndex",
+    path: "/userIndex",
+    component: "system/fenpei/InDex",
+    hidden: false,
+    meta: { title: "分配用户", icon: "build", noCache: true, link: null },
+    }
+  // {
+  //   component: "Layout",
+  //   hidden: false,
+  //   meta: { title: "pe", icon: "excel", noCache: false, link: null },
+  //   name: "fenpei",
+  //   path: "/fenpei",
+  //   redirect: "noRedirect",
+  //   children: [{
+  //     component: "system/fenpei/index",
+  //     hidden: false,
+  //     meta: { title: "分配用户", icon: "build", noCache: true, link: null },
+  //     name: "userIndex",
+  //   }]
+  // }
+)
 const delRoleID = ref(null)
 const treeRef = ref('null')
 const SelectID = ref([])
@@ -275,9 +300,11 @@ onMounted(() => {
 /**
  * 分配用户
  */
-const fenUser=(row)=>{
-console.log(row);
-router.push('/userIndex')
+const fenUser = (row) => {
+  console.log(row)
+  stroe.dispatch('ADD_TAGS',CODE_ROUTER)
+  // router.addRoute(CODE_ROUTER)
+  router.push('/userIndex')
 }
 const onSelect = () => {
   roleListApi({
@@ -439,16 +466,16 @@ const deleteRow = (row) => {
 /**
  * @param{Quan_xian}权限参数参数
  */
- const Quan_xian = reactive({
-  QX_List:'',
+const Quan_xian = reactive({
+  QX_List: '',
   roleKey: "",
   roleName: "",
   dataScope: '',
-  deptIds:[]
+  deptIds: []
 })
-const FeiPEI=(val)=>{
-console.log(val);
-console.log( treeRef.value.getCurrentNode());
+const FeiPEI = (val) => {
+  console.log(val);
+  console.log(treeRef.value.getCurrentNode());
 }
 /**
  * 
@@ -463,10 +490,10 @@ const dataPower = (row) => {
       Authorization: "Bearer " + token,
     }
   }).then(res => {
-    Quan_xian.QX_List=res
-    Quan_xian.roleKey=res.data.data.roleKey
-    Quan_xian.roleName=res.data.data.roleName
-    Quan_xian.dataScope=res.data.data.dataScope
+    Quan_xian.QX_List = res
+    Quan_xian.roleKey = res.data.data.roleKey
+    Quan_xian.roleName = res.data.data.roleName
+    Quan_xian.dataScope = res.data.data.dataScope
   })
 
   axios({
@@ -485,30 +512,30 @@ const dataPower = (row) => {
 const codeSubmit = () => {
   dataScopeAPI({
     admin: false,
-    createBy:Quan_xian.QX_List.createBy,
+    createBy: Quan_xian.QX_List.createBy,
     createTime: Quan_xian.QX_List.createTime,
-    dataScope:Quan_xian.dataScope,
-    delFlag:Quan_xian.QX_List.delFlag,
-    deptCheckStrictly:Quan_xian.QX_List.deptCheckStrictly,
-    deptIds:Quan_xian.deptIds,
+    dataScope: Quan_xian.dataScope,
+    delFlag: Quan_xian.QX_List.delFlag,
+    deptCheckStrictly: Quan_xian.QX_List.deptCheckStrictly,
+    deptIds: Quan_xian.deptIds,
     flag: Quan_xian.QX_List.flag,
     menuCheckStrictly: Quan_xian.QX_List.menuCheckStrictly,
     menuIds: ADD_Role.menuIds,
     remark: Quan_xian.QX_List.remark,
     roleId: Quan_xian.QX_List.roleId,
     roleKey: Quan_xian.QX_List.roleKey,
-    roleName:Quan_xian.QX_List.roleName,
-    roleSort:Quan_xian.QX_List.roleSort,
-    status:Quan_xian.QX_List.status,
+    roleName: Quan_xian.QX_List.roleName,
+    roleSort: Quan_xian.QX_List.roleSort,
+    status: Quan_xian.QX_List.status,
     tenantId: Quan_xian.QX_List.tenantId,
-    updateBy:Quan_xian.QX_List.updateBy,
-    updateTime:dateValue(),
-  }).then(res=>{
-    if(res.data.code==200){
+    updateBy: Quan_xian.QX_List.updateBy,
+    updateTime: dateValue(),
+  }).then(res => {
+    if (res.data.code == 200) {
       data.role_List = res.data.rows
       list()
       ElMessage.success('修改成功')
-    }else{
+    } else {
       ElMessage.success(res.data.msg)
     }
 
