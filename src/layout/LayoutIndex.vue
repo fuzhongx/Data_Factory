@@ -1,7 +1,7 @@
 <template>
     <div class="common-layout" >
       <el-container>
-        <el-aside width="200" id="asides"><Asideindexs></Asideindexs></el-aside>
+        <el-aside width="250" id="asides"><Asideindexs></Asideindexs></el-aside>
         <el-container>
           <el-header height="auto">
             <Header/>
@@ -34,21 +34,23 @@ setTimeout(() => {
 <style lang="scss" scoped>
 .el-container{  
   height: 100vh;
-  // background-color: var(--el-bg-color-page);
-  // background-color: #fff !important;
+  background-color: #fff !important;
 }
+
 .el-header {
     --el-header-padding:0px !important; 
-    --el-header-height: 50px;
+    // --el-header-height: 50px;
     box-sizing: border-box;
     flex-shrink: 0;
     height: var(--el-header-height);
     padding: var(--el-header-padding);
 }
 .el-main{
-  --el-main-padding:10px !important; 
-  padding: var(--el-main-padding);
+  --el-main-padding:10px !important;
+  padding: 10px !important;
+  // padding: var(--el-main-padding);
 }
+
 .el-aside {
   overflow: auto; /* 保持可滚动 */
   scrollbar-width: none; /* 对于Firefox */

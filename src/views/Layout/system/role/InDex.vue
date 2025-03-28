@@ -222,27 +222,13 @@ const play = reactive({
 import { useStore } from 'vuex';
 const stroe=useStore()
 const CODE_ROUTER = reactive(
-  {   
-    name: "userIndex",
+  {
     path: "/userIndex",
-    component: "system/fenpei/InDex",
-    hidden: false,
+    name: "userIndex",
+    component:()=>import("@/views/Layout/system/fenpei/InDex.vue"),
     meta: { title: "分配用户", icon: "build", noCache: true, link: null },
+       
     }
-  // {
-  //   component: "Layout",
-  //   hidden: false,
-  //   meta: { title: "pe", icon: "excel", noCache: false, link: null },
-  //   name: "fenpei",
-  //   path: "/fenpei",
-  //   redirect: "noRedirect",
-  //   children: [{
-  //     component: "system/fenpei/index",
-  //     hidden: false,
-  //     meta: { title: "分配用户", icon: "build", noCache: true, link: null },
-  //     name: "userIndex",
-  //   }]
-  // }
 )
 const delRoleID = ref(null)
 const treeRef = ref('null')
@@ -744,6 +730,7 @@ const reset = () => {
   outline: 0;
   color: #409eff;
   font-size: 12px;
+  cursor: pointer;
 }
 
 .el-dropdown-lin:hover {

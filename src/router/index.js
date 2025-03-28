@@ -17,10 +17,11 @@ const staticRoutes  = [
         hidden: false,
       },
       {
-        component: "@/views/Layout/system/fenpei/InDex",
-        meta: { title: "分配用户", icon: "build", noCache: true, link: null },
-        name: "userIndex",
         path: "/userIndex",
+        name: "userIndex",
+        component:()=>import("@/views/Layout/system/fenpei/InDex.vue"),
+        meta: { title: "分配用户", icon: "build", noCache: true, link: null },
+       
       }
      
     ],
