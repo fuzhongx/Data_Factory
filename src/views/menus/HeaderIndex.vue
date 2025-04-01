@@ -22,7 +22,7 @@
       <div class="header-right">
         <svg-icon :icon-name="data.screenName" @click="toggleFullscreen" class="fullscreen">
           <FullScreen v-if="!isFullscreen" />
-          <ExitFullScreen v-else />
+          <!-- <exitFullScreen v-else /> -->
         </svg-icon>
         <!-- 布局大小 -->
         <el-dropdown class="m-r-20">
@@ -197,11 +197,14 @@ const passion = () => {
   router.push("/pscenter");
 };
 
+/**
+ * 注册登录
+ */
 const reset = () => {
-  router.push("/");
   cookie.remove("token");
   cookie.remove("refreshToken");
   localStorage.removeItem("selectKey");
+  router.push("/");
 };
 </script>
 

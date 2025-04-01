@@ -1,5 +1,5 @@
 <template>
-  <div class="animate__animated animate__fadeInLeft" style="height: 100%;">
+  <div class="animate__animated " style="height: 100%;">
     <el-form :inline="true" v-model="from" class="demo-form-inline">
       <el-form-item label="角色编码">
         <el-input v-model="from.roleKey" placeholder="请输入角色编码" clearable class="input" />

@@ -1,6 +1,14 @@
 <template>
   <div class="header">
-    <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <transition
+      enter-active-class="animate__animated animate__fadeIn"
+      leave-active-class="animate__animated animate__fadeOut"
+      mode="out-in"
+    >
+    <component :is="Component" />
+    </transition>
+    </router-view>
   </div>
 </template>
 

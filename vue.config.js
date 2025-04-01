@@ -49,7 +49,7 @@ module.exports = defineConfig({
     host:"localhost",//外部访问
     port:process.env.VUE_APP_PORT,
     client: {
-      overlay:true
+      overlay:false
     },
    
     proxy: {

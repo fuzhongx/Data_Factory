@@ -46,7 +46,7 @@ import { loginApi, captchaApi,listApi } from '@/requert/login/loginApi.js'
 import { useRouter } from 'vue-router';
 import cookies from "vue-cookies";
 import { ElMessage } from 'element-plus';
-import fetchDynamicRoutes from '@/router/router'
+// import fetchDynamicRoutes from '@/router/router'
 const router=new useRouter()
 
 const psw=ref('true')
@@ -183,7 +183,7 @@ const submitForm = async (formEl) => {
             
         }
     })
-  await  fetchDynamicRoutes()
+//   await  fetchDynamicRoutes()
 }
 
 </script>
