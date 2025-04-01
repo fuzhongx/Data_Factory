@@ -17,14 +17,6 @@
           <span class="logo-title">{{ $t('title') }}</span>
         </template>
       </el-menu-item>
-      <!-- <el-menu-item index="/homeindex">
-        <svg-icon
-          icon-name="home"
-          class="svg-margin-r-20"
-          style="color: #fff"
-        ></svg-icon>
-        <template #title>{{ $t('home') }}</template></el-menu-item
-      > -->
 
       <!-- style="background-color: #304156 !important" -->
       <template v-for="items in data.menuList" :key="items.id">

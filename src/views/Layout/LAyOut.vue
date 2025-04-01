@@ -1,7 +1,7 @@
 <template>
     <div class="common-layout" >
       <el-container>
-        <el-aside width="200" id="asides"><Asideindexs></Asideindexs></el-aside>
+        <el-aside width="250" id="asides"><Asideindexs></Asideindexs></el-aside>
         <el-container>
           <el-header height="auto">
             <Header/>
@@ -29,13 +29,13 @@ let loadingInstance = ElLoading.service({
 // 模拟异步操作，1000 毫秒后取消 Loading
 setTimeout(() => {
     loadingInstance.close();
-  }, 1500);
+  }, 1000);
 </script>
 
 <style lang="scss" scoped>
 .el-container{
   height: 100vh;
-  background-color: var(--el-bg-color-page);
+  background-color:#fff;
 }
 .el-header {
     --el-header-padding:0px !important; 
@@ -49,6 +49,7 @@ setTimeout(() => {
 .el-aside {
   overflow: auto; /* 保持可滚动 */
   scrollbar-width: none; /* 对于Firefox */
+  transition: width 0.3s;
   
 }
 .el-aside::-webkit-scrollbar {

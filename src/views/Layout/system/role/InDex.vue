@@ -223,12 +223,19 @@ import { useStore } from 'vuex';
 const stroe=useStore()
 const CODE_ROUTER = reactive(
   {
-    path: "/userIndex",
-    name: "userIndex",
-    component:()=>import("@/views/Layout/system/fenpei/InDex.vue"),
-    meta: { title: "分配用户", icon: "build", noCache: true, link: null },
-       
-    }
+    path: "/",
+    component: () => import("@/views/Layout/LAyOut.vue"),
+    hidden: false,
+    children: [
+      {
+        path: "/userIndex",
+        name: "userIndex",
+        component:()=>import("@/views/Layout/system/fenpei/InDex.vue"),
+        meta: { title: "分配用户", icon: "build", noCache: true, link: null }
+      }
+     
+    ],
+  }
 )
 const delRoleID = ref(null)
 const treeRef = ref('null')
@@ -288,8 +295,8 @@ onMounted(() => {
  */
 const fenUser = (row) => {
   console.log(row)
-  stroe.dispatch('ADD_TAGS',CODE_ROUTER)
-  // router.addRoute(CODE_ROUTER)
+  // stroe.dispatch('ADD_TAGS',CODE_ROUTER)
+  router.addRoute(CODE_ROUTER)
   router.push('/userIndex')
 }
 const onSelect = () => {

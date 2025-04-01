@@ -7,15 +7,10 @@ const staticRoutes  = [
     }
   },
   {
-    path: "/index",
-    component: () => import("@/layout/LayoutIndex.vue"),
+    path: "/",
+    component: () => import("@/views/Layout/LAyOut.vue"),
     hidden: false,
     children: [
-      {
-        path: "/homeindex",
-        component: () => import("@/views/menus/HomeIndex.vue"),
-        hidden: false,
-      },
       {
         path: "/userIndex",
         name: "userIndex",

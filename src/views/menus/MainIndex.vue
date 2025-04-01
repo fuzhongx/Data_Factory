@@ -1,5 +1,6 @@
 <template>
   <div class="header">
+    <el-scrollbar>
     <router-view v-slot="{ Component }">
       <transition
       enter-active-class="animate__animated animate__fadeIn"
@@ -9,6 +10,7 @@
     <component :is="Component" />
     </transition>
     </router-view>
+  </el-scrollbar>
   </div>
 </template>
 
