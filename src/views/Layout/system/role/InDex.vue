@@ -8,7 +8,7 @@
         <el-input v-model="from.roleName" placeholder="请输入角色名称" clearable class="input" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="from.status" placeholder="请选择状态" clearable style="width: 192px; height: 36px">
+        <el-select v-model="from.status" placeholder="请选择状态" clearable style="width: 192px; height: 36px" class="input" >
           <el-option label="正常" value="0" />
           <el-option label="停用" value="1" />
         </el-select>
@@ -16,7 +16,7 @@
       <el-form-item label="创建时间">
         <el-date-picker v-model="from.params" editable format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
           type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"
-          @change="changeTime" />
+          @change="changeTime" class="input" />
         <!-- style="width: 210px;" -->
       </el-form-item>
       <el-form-item>
@@ -69,6 +69,7 @@
         </el-table-column>
       </el-table>
     </div>
+
     <!-- 添加角色--------------- -->
     <el-dialog v-model="play.adddialog" title="添加角色" width="25%">
       <el-form :model="ADD_Role" :rules="rules" class="el-from-padding">
@@ -102,6 +103,7 @@
         </span>
       </template>
     </el-dialog>
+
     <!-- 编辑角色-------------------------------------------------------------- -->
     <el-dialog v-model="play.upddialog" title="编辑角色" width="25%">
       <el-form :model="UPD_Role" :rules="rules" class="el-from-padding">
@@ -135,6 +137,7 @@
         </span>
       </template>
     </el-dialog>
+
     <!-- 分配权限 -->
     <el-dialog v-model="play.codedialog" title="分配权限" width="25%">
       <el-form :model="UPD_Role" :rules="rules" class="el-from-padding">
@@ -219,8 +222,8 @@ const play = reactive({
   codedialog: false
 })
 
-import { useStore } from 'vuex';
-const stroe=useStore()
+// import { useStore } from 'vuex';
+// const stroe=useStore()
 const CODE_ROUTER = reactive(
   {
     path: "/",
@@ -733,6 +736,12 @@ const reset = () => {
 </script>
 
 <style lang="scss" scoped>
+.el-select__wrapper{
+  height: 36px !important;
+}
+.el-select__wrapper{
+  height:36px !important;
+}
 .el-dropdown-link {
   outline: 0;
   color: #409eff;

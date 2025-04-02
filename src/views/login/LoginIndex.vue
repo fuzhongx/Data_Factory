@@ -46,7 +46,7 @@ import { loginApi, captchaApi,listApi } from '@/requert/login/loginApi.js'
 import { useRouter } from 'vue-router';
 import cookies from "vue-cookies";
 import { ElMessage } from 'element-plus';
-// import fetchDynamicRoutes from '@/router/router'
+
 const router=new useRouter()
 
 const psw=ref('true')
@@ -143,9 +143,6 @@ const pasdFull = () => {
                 }
                
             })
-                .catch(error => {
-                    ElMessage.error(error);
-                })
         }
     })
  }
@@ -168,6 +165,7 @@ const submitForm = async (formEl) => {
                 localStorage.setItem('selectKey','dashboard')
                 router.push('/index')
                 ElMessage.success('登录成功');
+                  
                 LoginForm.loading = false
                 }else{
                     LoginForm.loading = false
@@ -176,10 +174,6 @@ const submitForm = async (formEl) => {
                 }
                
             })
-                .catch(error => {
-                    ElMessage.error(error);
-                    LoginForm.loading = false
-                })
             
         }
     })

@@ -1,13 +1,14 @@
 const staticRoutes  = [
   {
     path: "/",
+    redirect:'/index',
     component: () => import("@/views/login/LoginIndex.vue"),
     hidden: false,
     meta: {icon: "dashboard", link: null,noCache: false,title: "登录页",
     }
   },
   {
-    path: "/",
+    path: "/index",
     component: () => import("@/views/Layout/LAyOut.vue"),
     hidden: false,
     children: [

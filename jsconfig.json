@@ -5,6 +5,7 @@
     "module": "esnext",
     "baseUrl": "./",
     "moduleResolution": "node",
+    "noUnusedParameters": false ,// 关闭未使用参数的检查（如果只需要关闭局部变量的话）
     "paths": {
       "@/*": [
         "src/*"
