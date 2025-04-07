@@ -154,7 +154,7 @@ const handleCurrentChange = (val) => {
  */
 const user_table = ref([])
 
-const total = ref(null)
+const total = ref(0)
 
 const getKey = (row) => {
   return row.id

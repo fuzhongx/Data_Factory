@@ -22,6 +22,14 @@ export function Ruku_Num_Attachment(data){
     })
 }
 
+export function Ruku_Add_Attachment(data){
+    return service ({
+        url:'/system/attachment',
+        method:'post',
+        data
+    })
+}
+
 // 类型
 export function inventory_types(params){
     return service ({
