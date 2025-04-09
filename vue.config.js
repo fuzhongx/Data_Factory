@@ -4,10 +4,10 @@ const resolve = dir => {
   return path.join(__dirname, dir)
 }
 module.exports = defineConfig({
+  lintOnSave: false,
   publicPath: process.env.NODE_NEV === 'production' ? '': './',
   outputDir: process.env.NODE_ENV === 'production'  ? 'dist' : 'devDist',//打包称那个文件夹
   transpileDependencies: false,
-  lintOnSave: false,
   css: {
     loaderOptions: {
       // 给 sass-loader 传递选项
