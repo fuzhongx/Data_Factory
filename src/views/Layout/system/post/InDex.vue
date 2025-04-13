@@ -225,9 +225,6 @@ const updateRow = (row) => {
   data.updpost.tenantId = row.tenantId;
   data.updpost.updateBy = row.updateBy;
   data.updpost.updateTime = row.updateTime;
-
-  console.log(row);
-
   data.updpost.postId = row.postId;
 };
 const updSubmit = () => {
@@ -317,7 +314,6 @@ const updPost = () => {
       Authorization: "Bearer " + token,
     },
   }).then((res) => {
-    console.log(res.data.data);
     data.updpost.postCode = res.data.data.postCode;
     data.updpost.postName = res.data.data.postName;
     data.updpost.postSort = res.data.data.postSort;
