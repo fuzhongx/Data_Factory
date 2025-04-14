@@ -1,12 +1,21 @@
-
+// zidong(){
+//   let randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+//   if( formItems.field==='materialNumber'){
+//       formItems.field=randomNum
+//   }
+// },
 export default {
-    LabelWidth:'68px',
+      LabelWidth:'68px',
       inline:true,
       formItems:[{
           type: 'input',
           label: '物料编号',
           placeholder: '请输入物料编号',
           field:'materialNumber'
+        },
+        {
+          type: 'button',
+          // field:zidong()
         },
         {
           type: 'input',

@@ -1,5 +1,9 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+
+/**
+ * @property {handleDaochu} 导出函数
+ */
  const handleDaochu = (data) => {
     // 创建一个workbook
    const workbook = XLSX.utils.book_new();

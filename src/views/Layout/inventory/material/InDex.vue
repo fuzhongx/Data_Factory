@@ -9,13 +9,15 @@
       </template>
     </ELForm>
 
-  <!-- 事项 -->
-   <div style="margin: 20px 0 10px 0;">
-    <el-button class="tav_btn" @click="handleAdd">新增</el-button>
-    <el-button class="tav_btn">修改</el-button>
-    <el-button class="tav_btn">删除</el-button>
-    <el-button class="tav_btn">导出</el-button>
-   </div>
+    <!-- 事项 -->
+    <div style="margin: 20px 0 10px 0">
+      <el-button class="tav_btn" @click="handleAdd">新增</el-button>
+      <el-button class="tav_btn" @click="handleUpdata" :disabled="updateBtn"
+        >修改</el-button
+      >
+      <el-button class="tav_btn">删除</el-button>
+      <el-button class="tav_btn" @click="handelExport">导出</el-button>
+    </div>
 
     <!-- 表单 -->
     <ElTable :tableData="tableData" :column="column.columns">
@@ -23,13 +25,11 @@
         <button @click="handelEdit(scope.row)" class="btn_active" type="text">
           修改
         </button>
-        <button @click="deleteRow(scope.row)" class="btn_active">
-          删除
-        </button>
+        <button @click="deleteRow(scope.row)" class="btn_active">删除</button>
       </template>
     </ElTable>
-  
-   <!-- 修改 -->
+
+    <!-- 修改 -->
     <el-dialog v-model="uPddialog" title="物料修改操作" width="35%">
       <ELForm
         v-bind="UpdformConfig"
@@ -47,25 +47,23 @@
       </ELForm>
     </el-dialog>
 
-       <!-- 添加 -->
-       <el-dialog v-model="uPddialog" title="物料新增操作" width="35%">
+    <!-- 添加 -->
+    <el-dialog v-model="aDDdialog" title="物料新增操作" width="35%">
       <ELForm
         v-bind="UpdformConfig"
-        v-model:modelValue="uPdFormData"
+        v-model:modelValue="aDdFormData"
         ref="myFormRef"
       >
         <template #footer>
           <el-form-item>
-            <el-button class="tav_btn" @click="uPdbtn">确认</el-button>
-            <el-button class="tav_btn" @click="uPddialog = false"
+            <el-button class="tav_btn" @click="AddBtn">确认</el-button>
+            <el-button class="tav_btn" @click="aDDdialog = false"
               >取消</el-button
             >
           </el-form-item>
         </template>
       </ELForm>
     </el-dialog>
-
-
   </div>
 </template>
 
@@ -77,18 +75,31 @@ import ElTable from "@/components/TableConfig/ElTable.vue";
 import column from "@/components/TableConfig/MyTable";
 import UpdformConfig from "@/components/material/uPd-Material";
 import { ElMessage } from "element-plus";
-import { dateValue } from '@/ulit/DateTime.js'
-import  {handleDelete } from '@/ulit/delete.js'
-import { List_material, uPd_material } from "@/requert/inventory/material";
+import { dateValue } from "@/ulit/DateTime.js";
+import { handleDelete } from "@/ulit/delete.js";
+import { handleDaochu } from "@/ulit/XLSX";
+import bus from "@/ulit/Bus.js";
+import cookies from "vue-cookies";
+const token = cookies.get("token");
+
+import {
+  List_material,
+  uPd_material,
+  Add_material,
+} from "@/requert/inventory/material";
+import axios from "axios";
 
 const uPddialog = ref(false);
+const aDDdialog = ref(false);
 
 //form 配置项
 const formItems = formConfig.formItems ?? [];
 const uPdFormItem = UpdformConfig.formItems ?? [];
+const aDdFormItem = UpdformConfig.formItems ?? [];
 
 const from = {};
 const uPdForm = {};
+const aDdForm = {};
 
 // 见每个配置项转化为空
 formItems.map((item) => {
@@ -100,8 +111,14 @@ uPdFormItem.map((item) => {
   uPdForm[item.field] = "";
 });
 
+//添加项目转化为空
+aDdFormItem.map((item) => {
+  aDdForm[item.field] = "";
+});
+
 const formData = ref(from);
 const uPdFormData = ref(uPdForm);
+const aDdFormData = ref(aDdForm);
 
 const myFormRef = ref();
 
@@ -129,7 +146,6 @@ onMounted(() => {
 const List = () => {
   List_material().then((res) => {
     tableData.value = res.data.rows;
-    console.log(res.data.rows, "物料管理");
   });
 };
 
@@ -137,26 +153,86 @@ const List = () => {
 const tableData = ref([]);
 const RowValue = ref();
 
+// 导出
+const handelExport = () => {
+  handleDaochu(tableData.value);
+};
+
+// 新增
+const handleAdd = () => {
+  aDDdialog.value = true;
+};
+
+const AddBtn = () => {
+  console.log(aDdFormData.value);
+  Add_material({
+    inventoryMax: 0,
+    inventoryMin: 0,
+    inventorySafe: 0,
+    materialAttribute: aDdFormData.value.materialAttribute,
+    materialName: aDdFormData.value.materialName,
+    materialNumber: aDdFormData.value.materialNumber,
+    materialQuantity: 0,
+    materialUnit: aDdFormData.value.materialUnit,
+    specification: aDdFormData.value.specification,
+  }).then((res) => {
+    if (res.data.code == 200) {
+      tableData.value = res.data.rows;
+      ElMessage.success(res.data.msg);
+      List();
+      aDDdialog.value = false;
+    } else {
+      ElMessage.error(res.data.msg);
+    }
+  });
+};
+
 /**
  * @param deleteParams 删除所需参数
  */
-let deleteParams={
-    url:'https://www.cp-mes.cn/prod-api/system/material/',
-    ArrayId:[],
-    method(){
-      List()
-    }
-  }
+let deleteParams = {
+  url: "https://www.cp-mes.cn/prod-api/system/material/",
+  ArrayId: [],
+  method() {
+    List();
+  },
+};
 
 //删除
-const deleteRow=(row)=>{
-  deleteParams.ArrayId=row.materialId
-  handleDelete(deleteParams)
-}
+const deleteRow = (row) => {
+  deleteParams.ArrayId = row.materialId;
+  handleDelete(deleteParams);
+};
 
-const handleAdd=()=>{
 
-}
+//多选编辑
+const changeId = ref();
+const updateBtn = ref(true);
+
+bus.on("getCheckedBoxID", (data) => {
+  changeId.value = data;
+
+  if (data.length == 1) {
+    //修改按钮是否可用
+    updateBtn.value = false;
+  }
+
+  console.log(data);
+});
+
+const getAxios = reactive({
+  url: "https://www.cp-mes.cn/prod-api/system/material/" + changeId.value,
+  method: "get",
+  headers: {
+    Authorization: "Bearer " + token,
+  },
+});
+
+const handleUpdata = () => {
+  axios(getAxios).then((res) => {
+     
+  });
+};
 
 //编辑
 const handelEdit = (row) => {
@@ -199,7 +275,7 @@ const handelEdit = (row) => {
     updateBy,
     updateTime,
   };
-  RowValue.value.updateTime=dateValue()
+  RowValue.value.updateTime = dateValue();
 };
 const uPdbtn = () => {
   let {
@@ -244,7 +320,7 @@ const uPdbtn = () => {
       tableData.value = res.data.rows;
       ElMessage.success("修改成功");
       List();
-      uPddialog.value=false
+      uPddialog.value = false;
     } else {
       ElMessage.error(res.data.msg);
     }

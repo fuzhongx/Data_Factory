@@ -13,7 +13,7 @@
         </template>
 
         <template v-else-if="item.type === 'select'">
-          <el-select :placeholder="item.placeholder" class="active" v-model="modelValue[item.field]">
+          <el-select :placeholder="item.placeholder" class="active" v-model="modelValue[item.field]" >
             <el-option v-for="options in item.option" :key="options.value" :value="options.value"
               :label="options.label">
             </el-option>
@@ -23,6 +23,7 @@
         <template v-else-if="item.type === 'switch'">
           <el-switch v-model="modelValue[item.field]"></el-switch>
         </template>
+
 
         <template v-else-if="item.type === 'radio'">
           <el-radio-group v-model="modelValue[item.field]">
@@ -40,15 +41,22 @@
             <el-checkbox :label="items.label" :name="item.label" :value="items.value" v-for="items in item.checkbox" :key="items.value"/>
           </el-checkbox-group>
         </template> -->
+       
+        <template v-else-if="item.type === 'button'">
+          <el-button @click="randomCode" class="btn">自动生成</el-button>
+        </template>
 
       </el-form-item>
     </template>
+
     <slot name='footer'></slot>
   </el-form>
 </template>
 
 <script setup>
 import { defineProps, computed,defineExpose,ref,defineEmits } from 'vue'
+import { dateValue } from '@/ulit/getDate';
+
 const props = defineProps({
   LabelWidth: {
     type: String,
@@ -74,6 +82,20 @@ const modelValue = computed({
 
 const myFormRef=ref()
 
+/**
+ * 自动生成编码
+ */
+const randomCode=()=>{
+
+let randomNum = '';
+for (let i = 0; i < 5; i++) {
+    randomNum += Math.floor(Math.random() * 10);
+}
+
+let randomCode='WL'+dateValue()+randomNum
+  modelValue.value.materialNumber= randomCode
+}
+
 //重置
 const reset=()=>{
   myFormRef.value?.resetFields()
@@ -81,11 +103,18 @@ const reset=()=>{
 
 //抛出方法，父组件调用子组件方法
 defineExpose({
-  reset
+  reset,
+  randomCode
 })
 </script>
 
 <style>
+.btn{
+  padding: 0px 20px;
+  color: #fff;
+  background-color: #3671e8;
+  border: 1px solid #3671e8;
+}
 .el-form-item__label {
   font-weight: 700 !important;
   text-align: right;

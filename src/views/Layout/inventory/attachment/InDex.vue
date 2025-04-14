@@ -425,7 +425,6 @@ const getCheckedBox_Value = (row) => {
     })
     const a=ref([])
     a.value=Array.from(newId.value)
-    console.log(a.value,'1234');
     console.log(Array.from(newId.value)); // 输出当前选中的id数组（如果不希望是Set，可以转换为Array） 
 }
 
