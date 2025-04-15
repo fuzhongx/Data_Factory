@@ -4,11 +4,19 @@
     :data="tableData"
     @selection-change="getCheckedBox_Value"
   >
-    <el-table-column v-for="item in column" :key="item.prop" v-bind="item">
+  
+  <template  v-for="item in column" :key="item.prop">
+   <el-table-column v-if="item.type=='switch'" :label="item.label">
+    <el-switch v-model="$slots[item.prop]"/>
+   </el-table-column>
+
+    <el-table-column v-bind="item" v-else>
       <template #default="scope" v-if="$slots[item.prop]">
         <slot :name="item.prop" v-bind="scope"></slot>
       </template>
     </el-table-column>
+
+  </template>
   </el-table>
 </template>
 

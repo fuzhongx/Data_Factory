@@ -7,15 +7,14 @@
             <Header/>
             <TabNav/>
           </el-header>
-          <el-main><router-view></router-view>
-        </el-main>
+          <el-main><Main></Main></el-main>
         </el-container>
       </el-container>
     </div>
   </template>
 <script setup>
 import Asideindexs from '@/views/menus/AsideIndex';
-// import Main from '@/views/menus/MainIndex';
+import Main from '@/views/menus/MainIndex';
 import Header from '@/views/menus/HeaderIndex';
 import TabNav from '@/views/menus/TabNav.vue';
 // import { ElLoading } from 'element-plus';

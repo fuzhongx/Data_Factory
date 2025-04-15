@@ -12,10 +12,8 @@
     <!-- 事项 -->
     <div style="margin: 20px 0 10px 0">
       <el-button class="tav_btn" @click="handleAdd">新增</el-button>
-      <el-button class="tav_btn" @click="handleUpdata" :disabled="updateBtn"
-        >修改</el-button
-      >
-      <el-button class="tav_btn">删除</el-button>
+      <el-button class="tav_btn" @click="handleUpdata" :disabled="updateBtn">修改</el-button>
+      <el-button class="tav_btn"  @click="handleDel">删除</el-button>
       <el-button class="tav_btn" @click="handelExport">导出</el-button>
     </div>
 
@@ -31,17 +29,11 @@
 
     <!-- 修改 -->
     <el-dialog v-model="uPddialog" title="物料修改操作" width="35%">
-      <ELForm
-        v-bind="UpdformConfig"
-        v-model:modelValue="uPdFormData"
-        ref="myFormRef"
-      >
+      <ELForm v-bind="UpdformConfig" v-model:modelValue="uPdFormData" ref="myFormRef">
         <template #footer>
           <el-form-item>
             <el-button class="tav_btn" @click="uPdbtn">确认</el-button>
-            <el-button class="tav_btn" @click="uPddialog = false"
-              >取消</el-button
-            >
+            <el-button class="tav_btn" @click="uPddialog = false">取消</el-button>
           </el-form-item>
         </template>
       </ELForm>
@@ -49,21 +41,19 @@
 
     <!-- 添加 -->
     <el-dialog v-model="aDDdialog" title="物料新增操作" width="35%">
-      <ELForm
-        v-bind="UpdformConfig"
-        v-model:modelValue="aDdFormData"
-        ref="myFormRef"
-      >
+      <ELForm v-bind="UpdformConfig" v-model:modelValue="aDdFormData" ref="myFormRef">
         <template #footer>
           <el-form-item>
             <el-button class="tav_btn" @click="AddBtn">确认</el-button>
-            <el-button class="tav_btn" @click="aDDdialog = false"
-              >取消</el-button
-            >
+            <el-button class="tav_btn" @click="aDDdialog = false">取消</el-button>
           </el-form-item>
         </template>
       </ELForm>
     </el-dialog>
+    <el-pagination v-model:current-page="Page.currentPage" v-model:page-size="Page.pageSize"
+            :page-sizes="Page.page_sizes" background layout="total, sizes, prev, pager, next, jumper"
+            :total='Page.total' @size-change="handleSizeChange" @current-change="handleCurrentChange"
+            style="float: right; margin-top: 10px;" />
   </div>
 </template>
 
@@ -88,6 +78,26 @@ import {
   Add_material,
 } from "@/requert/inventory/material";
 import axios from "axios";
+
+const Page = reactive({
+    pageSize: 10,
+    currentPage: 1,
+    total: 0,
+    page_sizes: [5, 10, 15, 20],
+})
+
+const handleSizeChange = (val) => {
+    Page.pageSize = val;
+    Page.currentPage = 1;
+    List()
+}
+
+const handleCurrentChange = (val) => {
+    Page.currentPage = val
+    //   debouncedFetch()
+    List()
+}
+
 
 const uPddialog = ref(false);
 const aDDdialog = ref(false);
@@ -144,8 +154,12 @@ onMounted(() => {
 });
 
 const List = () => {
-  List_material().then((res) => {
+  List_material({
+    pageNum: Page.currentPage,
+    pageSize: Page.pageSize,
+  }).then((res) => {
     tableData.value = res.data.rows;
+    Page.total=res.data.total
   });
 };
 
@@ -198,40 +212,87 @@ let deleteParams = {
   },
 };
 
+const handleDel=()=>{
+  deleteParams.ArrayId=changeId.value
+  handleDelete(deleteParams);
+}
+
 //删除
 const deleteRow = (row) => {
   deleteParams.ArrayId = row.materialId;
   handleDelete(deleteParams);
 };
 
-
 //多选编辑
-const changeId = ref();
+const changeId = [];
 const updateBtn = ref(true);
 
-bus.on("getCheckedBoxID", (data) => {
-  changeId.value = data;
+//编辑展示的值
+const showValue = ref();
 
+bus.on("getCheckedBoxID", (data) => {
+  changeId.value=data
+  getAxios.url = "https://www.cp-mes.cn/prod-api/system/material/" + data;
   if (data.length == 1) {
     //修改按钮是否可用
     updateBtn.value = false;
+  } else {
+    updateBtn.value = true;
   }
-
-  console.log(data);
 });
 
-const getAxios = reactive({
-  url: "https://www.cp-mes.cn/prod-api/system/material/" + changeId.value,
+const getAxios = {
+  url: "",
   method: "get",
   headers: {
     Authorization: "Bearer " + token,
   },
-});
+};
 
 const handleUpdata = () => {
+  uPddialog.value = true;
   axios(getAxios).then((res) => {
-     
+    showValue.value = res.data.data;
+    let {
+      createBy,
+      createName,
+      createTime,
+      inventoryMax,
+      inventoryMin,
+      inventorySafe,
+      materialAttribute,
+      materialId,
+      materialName,
+      materialNumber,
+      materialQuantity,
+      materialUnit,
+      remark,
+      specification,
+      updateBy,
+      updateTime,
+    } = res.data.data;
+    uPdFormData.value = {
+      materialNumber,
+      materialName,
+      materialUnit,
+      specification,
+      materialAttribute,
+      remark,
+    };
+    RowValue.value = {
+      createBy,
+      createName,
+      createTime,
+      inventoryMax,
+      inventoryMin,
+      inventorySafe,
+      materialId,
+      materialQuantity,
+      updateBy,
+      updateTime,
+    };
   });
+  RowValue.value.updateTime = dateValue();
 };
 
 //编辑
@@ -337,6 +398,7 @@ const uPdbtn = () => {
   border: 0;
   outline: 0;
 }
+
 .tav_btn {
   padding: 0px 20px;
   color: #fff;

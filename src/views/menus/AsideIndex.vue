@@ -112,13 +112,11 @@ onMounted(() => {
 
   bus.on("eventBus", (data) => {
     isCollapse.value = data;
-    console.log(data);
     
   });
 
   getRouter()
     .then((res) => {
-      console.log(res.data.data, "menu");
       data.menuList = res.data.data;
     })
     .catch((error) => {
