@@ -1,9 +1,3 @@
-// zidong(){
-//   let randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
-//   if( formItems.field==='materialNumber'){
-//       formItems.field=randomNum
-//   }
-// },
 export default {
       LabelWidth:'68px',
       inline:true,

@@ -51,10 +51,12 @@ export default {
       },
       {
         type: "switch",
-        prop: "status",
+        prop: 'status',
         label: "客户状态",
         width: "auto",
-        align:'center'
+        align:'center',
+        filed:'false'
+
       },
       {
         type: "txt",

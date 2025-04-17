@@ -12,8 +12,10 @@
     <!-- 事项 -->
     <div style="margin: 20px 0 10px 0">
       <el-button class="tav_btn" @click="handleAdd">新增</el-button>
-      <el-button class="tav_btn" @click="handleUpdata" :disabled="updateBtn">修改</el-button>
-      <el-button class="tav_btn"  @click="handleDel">删除</el-button>
+      <el-button class="tav_btn" @click="handleUpdata" :disabled="updateBtn"
+        >修改</el-button
+      >
+      <el-button class="tav_btn" @click="handleDel">删除</el-button>
       <el-button class="tav_btn" @click="handelExport">导出</el-button>
     </div>
 
@@ -29,11 +31,17 @@
 
     <!-- 修改 -->
     <el-dialog v-model="uPddialog" title="物料修改操作" width="35%">
-      <ELForm v-bind="UpdformConfig" v-model:modelValue="uPdFormData" ref="myFormRef">
+      <ELForm
+        v-bind="UpdformConfig"
+        v-model:modelValue="uPdFormData"
+        ref="myFormRef"
+      >
         <template #footer>
           <el-form-item>
             <el-button class="tav_btn" @click="uPdbtn">确认</el-button>
-            <el-button class="tav_btn" @click="uPddialog = false">取消</el-button>
+            <el-button class="tav_btn" @click="uPddialog = false"
+              >取消</el-button
+            >
           </el-form-item>
         </template>
       </ELForm>
@@ -41,19 +49,32 @@
 
     <!-- 添加 -->
     <el-dialog v-model="aDDdialog" title="物料新增操作" width="35%">
-      <ELForm v-bind="UpdformConfig" v-model:modelValue="aDdFormData" ref="myFormRef">
+      <ELForm
+        v-bind="UpdformConfig"
+        v-model:modelValue="aDdFormData"
+        ref="myFormRef"
+      >
         <template #footer>
           <el-form-item>
             <el-button class="tav_btn" @click="AddBtn">确认</el-button>
-            <el-button class="tav_btn" @click="aDDdialog = false">取消</el-button>
+            <el-button class="tav_btn" @click="aDDdialog = false"
+              >取消</el-button
+            >
           </el-form-item>
         </template>
       </ELForm>
     </el-dialog>
-    <el-pagination v-model:current-page="Page.currentPage" v-model:page-size="Page.pageSize"
-            :page-sizes="Page.page_sizes" background layout="total, sizes, prev, pager, next, jumper"
-            :total='Page.total' @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            style="float: right; margin-top: 10px;" />
+    <el-pagination
+      v-model:current-page="Page.currentPage"
+      v-model:page-size="Page.pageSize"
+      :page-sizes="Page.page_sizes"
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="Page.total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      style="float: right; margin-top: 10px"
+    />
   </div>
 </template>
 
@@ -80,24 +101,23 @@ import {
 import axios from "axios";
 
 const Page = reactive({
-    pageSize: 10,
-    currentPage: 1,
-    total: 0,
-    page_sizes: [5, 10, 15, 20],
-})
+  pageSize: 10,
+  currentPage: 1,
+  total: 0,
+  page_sizes: [5, 10, 15, 20],
+});
 
 const handleSizeChange = (val) => {
-    Page.pageSize = val;
-    Page.currentPage = 1;
-    List()
-}
+  Page.pageSize = val;
+  Page.currentPage = 1;
+  List();
+};
 
 const handleCurrentChange = (val) => {
-    Page.currentPage = val
-    //   debouncedFetch()
-    List()
-}
-
+  Page.currentPage = val;
+  //   debouncedFetch()
+  List();
+};
 
 const uPddialog = ref(false);
 const aDDdialog = ref(false);
@@ -131,15 +151,11 @@ const uPdFormData = ref(uPdForm);
 const aDdFormData = ref(aDdForm);
 
 const myFormRef = ref();
+formData.value.pageNum = 1;
+formData.value.pageSize = 10;
 
 const btnSelect = () => {
-  List_material({
-    pageNum: 1,
-    pageSize: 10,
-    materialNumber: formData.value.materialNumber,
-    materialName: formData.value.materialName,
-    specification: formData.value.specification,
-  }).then((res) => {
+  List_material(formData.value).then((res) => {
     tableData.value = res.data.rows;
   });
 };
@@ -159,7 +175,7 @@ const List = () => {
     pageSize: Page.pageSize,
   }).then((res) => {
     tableData.value = res.data.rows;
-    Page.total=res.data.total
+    Page.total = res.data.total;
   });
 };
 
@@ -212,10 +228,10 @@ let deleteParams = {
   },
 };
 
-const handleDel=()=>{
-  deleteParams.ArrayId=changeId.value
+const handleDel = () => {
+  deleteParams.ArrayId = changeId.value;
   handleDelete(deleteParams);
-}
+};
 
 //删除
 const deleteRow = (row) => {
@@ -230,15 +246,23 @@ const updateBtn = ref(true);
 //编辑展示的值
 const showValue = ref();
 
-bus.on("getCheckedBoxID", (data) => {
-  changeId.value=data
-  getAxios.url = "https://www.cp-mes.cn/prod-api/system/material/" + data;
-  if (data.length == 1) {
-    //修改按钮是否可用
-    updateBtn.value = false;
-  } else {
-    updateBtn.value = true;
-  }
+bus.on("getCheckedBoxID", (k) => {
+  const newId = ref(new Set());
+  k.forEach((item) => {
+    newId.value.add(item.clientId);
+    changeId.value = Array.from(newId.value);
+    getAxios.url =
+      "https://www.cp-mes.cn/prod-api/system/material/" +
+      Array.from(newId.value);
+
+    //判断是否禁用按钮
+    if (k.length == 1) {
+      //修改按钮是否可用
+      updateBtn.value = false;
+    } else {
+      updateBtn.value = true;
+    }
+  });
 });
 
 const getAxios = {
@@ -390,6 +414,9 @@ const uPdbtn = () => {
 </script>
 
 <style lang="scss" scoped>
+.el-dialog__title {
+  font-weight: 800;
+}
 .btn_active {
   padding: 0px 10px;
   margin: 0 10px;

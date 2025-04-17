@@ -6,8 +6,14 @@
   >
   
   <template  v-for="item in column" :key="item.prop">
-   <el-table-column v-if="item.type=='switch'" :label="item.label">
-    <el-switch v-model="$slots[item.prop]"/>
+   <el-table-column v-if="item.type=='switch'" :label="item.label" :align="item.align" :prop="item.prop">
+    <template #default="scope">
+        <el-switch v-model="scope.row.status"
+        active-value="0"
+        inactive-value="1"
+        />
+    </template>
+  
    </el-table-column>
 
     <el-table-column v-bind="item" v-else>
@@ -21,7 +27,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, onMounted, ref } from "vue";
 import bus from "@/ulit/Bus.js";
 const prop = defineProps({
   tableData: {
@@ -31,18 +37,16 @@ const prop = defineProps({
     type: Array,
   },
 });
+onMounted(()=>{
 
-const getCheckedBoxID = ref([]);
+
+})
+
+//获取多选ID
 const getCheckedBox_Value = (row) => {
-  const newId = ref(new Set());
-  row.forEach((item) => {
-    newId.value.add(item.materialId);
-    getCheckedBoxID.value = Array.from(newId.value);
-    console.log(getCheckedBoxID.value, 88);
-    console.log(Array.from(getCheckedBoxID.value));
-    bus.emit('getCheckedBoxID',Array.from(getCheckedBoxID.value))
-  });
+  bus.emit('getCheckedBoxID',row)
 };
+
 </script>
 
 <style>

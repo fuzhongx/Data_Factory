@@ -1,10 +1,14 @@
 <template>
-  <el-form :inline="inline" :label-width="LabelWidth" class="demo-form-inline" :model="modelValue" ref="myFormRef">
+  <el-form :inline="inline" :label-width="LabelWidth" class="demo-form-inline" :model="modelValue" ref="myFormRef" :rules="rules">
     <template v-for="(item, index) in formItems" :key="index">
       <el-form-item :label="item.label" :prop="item.field">
-
+    
         <template v-if="item.type === 'input'">
-          <el-input :placeholder="item.placeholder" v-model="modelValue[item.field]" class="active" />
+          <el-input :placeholder="item.placeholder" v-model="modelValue[item.field]" :class="item.inpWidthHeight" :disabled="item.disabled"/>
+        </template>
+
+        <template v-else-if="item.type === 'textarea'">
+          <el-input :placeholder="item.placeholder" :type="item.type" v-model="modelValue[item.field]" :class="item.inpWidthHeight" />
         </template>
 
         <template v-else-if="item.type == 'input' || item.type === 'password'">
@@ -70,6 +74,9 @@ const props = defineProps({
   },
   inline: {
     type: Boolean
+  },
+  rules:{
+    type:Object
   }
 })
 
@@ -92,8 +99,13 @@ for (let i = 0; i < 5; i++) {
     randomNum += Math.floor(Math.random() * 10);
 }
 
+//库存物料
 let randomCode='WL'+dateValue()+randomNum
-  modelValue.value.materialNumber= randomCode
+modelValue.value.materialNumber= randomCode
+
+//客户
+let randomClient='KH'+dateValue()+randomNum
+  modelValue.value.clientNumber= randomClient
 }
 
 //重置
@@ -107,6 +119,16 @@ defineExpose({
   randomCode
 })
 </script>
+<style lang="scss" scoped>
+.active {
+  width: 215px;
+  height: 32px;
+}
+.activeForm {
+  width: 250px;
+  height: 36px;
+}
+</style>
 
 <style>
 .btn{
@@ -116,21 +138,15 @@ defineExpose({
   border: 1px solid #3671e8;
 }
 .el-form-item__label {
-  font-weight: 700 !important;
+  font-weight: 1000 !important;
   text-align: right;
   vertical-align: middle;
   float: left;
   font-size: 14px;
-  color: #606266;
+  color: #202123;
   line-height: 40px;
   padding: 0 12px 0 0;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-}
-</style>
-<style lang="scss" scoped>
-.active {
-  width: 215px;
-  height: 32px;
 }
 </style>

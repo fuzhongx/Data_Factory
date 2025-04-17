@@ -7,3 +7,18 @@ export function List_Client(params){
         params
     })
 }
+
+export function uPd_Client(data){
+    return service ({
+        url:'/system/client',
+        method:'put',
+        data
+    })
+}
+export function Add_Client(data){
+    return service ({
+        url:'/system/client',
+        method:'post',
+        data
+    })
+}
