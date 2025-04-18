@@ -123,6 +123,7 @@ onMounted(() => {
   List();
 });
 
+// 展示分页数
 formData.value.pageNum=1,
 formData.value.pageSize=10
 
@@ -222,7 +223,6 @@ const handelEdit = (row) => {
   uPddialog.value=true
   let{clientAbbreviation,clientAvatar,clientContact,clientId, clientName,clientNumber,clientPhone,remark,status}=row
   uPdFormData.value={clientAbbreviation,clientAvatar,clientContact,clientId,clientName,clientNumber,clientPhone,remark,status}
-  console.log(row);
 };
 
 //编辑提交
@@ -242,6 +242,7 @@ const uPdBtn=()=>{
 /**
  * @param deleteParams 删除所需参数
  */
+
  let deleteParams = {
   url: "https://www.cp-mes.cn/prod-api/system/client/",
   ArrayId: [],
