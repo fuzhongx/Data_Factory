@@ -1,7 +1,5 @@
 <template>
   <div class="header">
-    <!-- background-color="#304156" -->
-    <!-- text-color="#BFCBD9" -->
     <el-menu active-text-color="#000" background-color="#10469c" text-color="#fff" class="el-menu-vertical-demo menu-bg"
       id="menu" :default-active="data.defaultMenu" :default-openeds="data.openKey" router :collapse="isCollapse"
       @open="handleOpen" style="height: 100vh" @select="handleMenuSelect"

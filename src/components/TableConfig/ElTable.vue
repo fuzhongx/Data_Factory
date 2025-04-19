@@ -50,4 +50,7 @@ const getCheckedBox_Value = (row) => {
 </script>
 
 <style>
+.el-table th.el-table__cell {
+    background-color: #f8f8f9;
+}
 </style>

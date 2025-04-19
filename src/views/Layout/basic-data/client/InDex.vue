@@ -12,20 +12,32 @@
    <!-- 事项 -->
    <div style="margin: 20px 0 10px 0">
       <el-button class="tav_btn" @click="handleAdd">新增</el-button>
-      <el-button class="tav_btn" @click="handleUpdata" :disabled="updateBtn">修改</el-button>
-      <el-button class="tav_btn" >删除</el-button>
+      <el-button class="tav_btn" @click="handleUpdata" :disabled="getId.length==1? false:true">修改</el-button>
+      <el-button class="tav_btn"  @click="handleDel"   :disabled="getId.length==0? true:false">删除</el-button>
       <el-button class="tav_btn" @click="handelExport">导出</el-button>
     </div>
 
    <!-- 表单 -->
   <ElTable :tableData="tableData" :column="column.columns">
     <template #operation="scope">
-      <button @click="handelEdit(scope.row)" class="btn_active" type="text">
+      <el-button @click="handelEdit(scope.row)" class="btn_active" type="text">
         修改
-      </button>
-      <button @click="deleteRow(scope.row)" class="btn_active">删除</button>
+      </el-button>
+      <el-button @click="deleteRow(scope.row)" class="btn_active">删除</el-button>
     </template>
   </ElTable>
+  <el-pagination
+      v-model:current-page="Page.currentPage"
+      v-model:page-size="Page.pageSize"
+      :page-sizes="Page.page_sizes" 
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="Page.total"
+      size="small"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      style="float: right; margin-top: 10px"
+    />
 
 <!-- 
   编辑 -->
@@ -63,10 +75,10 @@
 <script setup>
 import EIForm from "@/components/fromConfig/EIForm.vue";
 import ElTable from "@/components/TableConfig/ElTable.vue";
-import column from "@/components/basic-data/client.js";
-import formConfig from "@/components/basic-data/formConfig.js";
-import uPdformConfig from '@/components/basic-data/uPd-Client.js'
-import aDdformConfig from '@/components/basic-data/aDd-Client.js'
+import column from "@/components/basic-data/client/client.js";
+import formConfig from "@/components/basic-data/client/formConfig.js";
+import uPdformConfig from '@/components/basic-data/client/uPd-Client.js'
+import aDdformConfig from '@/components/basic-data/client/aDd-Client.js'
 
 import { handleDelete } from "@/ulit/delete.js";
 import {handleDaochu} from '@/ulit/XLSX.js';
@@ -116,7 +128,29 @@ const uPddialog=ref(false)
 const aDddialog=ref(false)
 
 //禁用按钮
-const updateBtn=ref(true)
+// const updateBtn=ref(true)
+// const deleteBtn=ref(true)
+
+//分页配置项
+const Page = reactive({
+  pageSize: 10,
+  currentPage: 1,
+  total: 0,
+  page_sizes: [5, 10, 15, 20],
+});
+
+const handleSizeChange = (val) => {
+  Page.pageSize = val;
+  Page.currentPage = 1;
+  List();
+};
+
+const handleCurrentChange = (val) => {
+  Page.currentPage = val;
+  //   debouncedFetch()
+  List();
+};
+
 
 
 onMounted(() => {
@@ -172,30 +206,29 @@ const handelExport=()=>{
  */
 
 const List = () => {
-  List_Client({ pageNum: 1, pageSize: 10 }).then((res) => {
+  List_Client({ pageNum:Page.currentPage, pageSize:Page.pageSize }).then((res) => {
     tableData.value = res.data.rows;
+    Page.total=res.data.total
   });
 };
 
 //存储选中ID
 const getCheckedID=ref([])
+const getId=ref([])
 
 //表格选中ID
 bus.on('getCheckedBoxID',k=>{
+  console.log('k:',k);
+  getId.value=k
+  
   const newId = ref(new Set());
   k.forEach((item) => {
+    console.log('展示',item);
+    
     newId.value.add(item.clientId);
     getCheckedID.value=Array.from(newId.value)
     getAxios.url='https://www.cp-mes.cn/prod-api/system/client/'+Array.from(newId.value)
-    console.log(k.length);
-
-     //判断是否禁用按钮
-    if(item.length==1){
-      updateBtn.value=false
-    }else{
-      updateBtn.value=true
-    }
-      });
+ }); 
 
 })
 
@@ -251,6 +284,12 @@ const uPdBtn=()=>{
   },
 };
 
+//多选删除
+const handleDel=()=>{
+  deleteParams.ArrayId=getCheckedID.value
+  handleDelete(deleteParams)
+}
+
 // 删除
 const deleteRow=(row)=>{
   deleteParams.ArrayId=row.clientId
@@ -266,9 +305,7 @@ const deleteRow=(row)=>{
   justify-content: flex-end;
   margin-top: 50px;
 }
-.el-dialog__title {
-    font-weight: 800 !important;
-}
+
 .tav_btn {
   padding: 0px 20px;
   color: #fff;
@@ -277,15 +314,14 @@ const deleteRow=(row)=>{
 }
 .btn_active {
   padding: 0px 10px;
-  margin: 30px 5px 20px 5px;
+  // margin: 30px 5px 20px 5px;
   color: #3671e8;
   background: #fff;
   border: 0;
   outline: 0;
 }
 </style>
+
 <style>
-.el-dialog__title {
-    font-weight: 800 !important;
-}
+
 </style>

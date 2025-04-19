@@ -32,6 +32,7 @@ const isCollapse=ref()
 // setTimeout(() => {
 //     loadingInstance.close();
 //   }, 1000);
+
   /**
    * params {data} aside收缩展开
    */

@@ -47,7 +47,7 @@
         </template> -->
        
         <template v-else-if="item.type === 'button'">
-          <el-button @click="randomCode" class="btn">自动生成</el-button>
+          <el-button @click="handleRandom" class="btn">自动生成</el-button>
         </template>
 
       </el-form-item>
@@ -60,7 +60,8 @@
 <script setup>
 import { defineProps, computed,defineExpose,ref,defineEmits } from 'vue'
 import { dateValue } from '@/ulit/getDate';
-
+import {randomCode} from '@/components/fromConfig/randomNum'
+ 
 const props = defineProps({
   LabelWidth: {
     type: String,
@@ -92,21 +93,10 @@ const myFormRef=ref()
 /**
  * 自动生成编码
  */
-const randomCode=()=>{
-
-let randomNum = '';
-for (let i = 0; i < 5; i++) {
-    randomNum += Math.floor(Math.random() * 10);
+const handleRandom=()=>{
+  randomCode(modelValue)
 }
 
-//库存物料
-let randomCode='WL'+dateValue()+randomNum
-modelValue.value.materialNumber= randomCode
-
-//客户
-let randomClient='KH'+dateValue()+randomNum
-  modelValue.value.clientNumber= randomClient
-}
 
 //重置
 const reset=()=>{
@@ -148,5 +138,8 @@ defineExpose({
   padding: 0 12px 0 0;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+}
+.el-dialog__title {
+    font-weight: 800 !important;
 }
 </style>

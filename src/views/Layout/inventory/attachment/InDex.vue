@@ -212,7 +212,7 @@
     </el-dialog>
     <el-pagination v-model:current-page="Page.currentPage" v-model:page-size="Page.pageSize"
       :page-sizes="Page.page_sizes" background layout="total, sizes, prev, pager, next, jumper" :total='Page.total'
-      @size-change="handleSizeChange" @current-change="handleCurrentChange" style="float: right; margin-top: 10px;" />
+      @size-change="handleSizeChange" @current-change="handleCurrentChange"  size="small" style="float: right; margin-top: 10px;" />
   </div>
 </template>
 
@@ -657,11 +657,6 @@ const getKey = (row) => {
 
 .el-form-item__label {
   font-weight: 700;
-}
-
-::v-deep .el-select__wrapper {
-  width: 100% !important;
-  height: 36px !important;
 }
 
 .el-tag {
