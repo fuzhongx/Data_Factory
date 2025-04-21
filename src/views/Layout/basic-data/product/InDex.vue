@@ -12,7 +12,7 @@
     </ELForm>
 
     <!-- from编辑表单 -->
-    <el-dialog v-model="uPddialog" :title="flag==true? '不良项修改操作': '不良项新增操作'" width="29%">
+    <el-dialog v-model="uPddialog" :title="flag==true? '产品修改操作': '产品新增操作'" width="40%">
     <ELForm v-bind="updFormConfig" v-model:modelValue="updFormData" ref="myFormRef">
       <template #footer>
           <el-form-item>
@@ -63,11 +63,11 @@
 
 <script setup>
 import ELForm from '@/components/fromConfig/EIForm.vue'
-import formConfig from '@/components/basic-data/defect/formConfig'
-import updFormConfig from '@/components/basic-data/defect/upd-formConfig'
+import formConfig from '@/components/basic-data/product/form'
+import updFormConfig from '@/components/basic-data/product/uPd-product'
 
 import ElTable from '@/components/TableConfig/ElTable.vue'
-import tableConfig from '@/components/basic-data/defect/tableConfig'
+import tableConfig from '@/components/basic-data/product/table'
 
 import { ElMessage } from 'element-plus'
 import handleDelete from '@/ulit/delete'
@@ -77,10 +77,9 @@ import cookies from "vue-cookies";
 const token = cookies.get("token");
 import {ref,onMounted,reactive} from 'vue'
 import {
-  List_Defect,
-  add_Defect,
-  edit_Defect
-} from '@/requert/basic-data/defect.js'
+  List_Produc,
+  List_processRoute
+} from '@/requert/basic-data/product.js'
 import axios from 'axios'
 
 
@@ -136,7 +135,7 @@ onMounted(()=>{
 })
 
 const List=()=>{
-  List_Defect({
+  List_Produc({
     pageNum:Page.currentPage,
     pageSize:Page.pageSize
   }).then(res=>{
@@ -148,12 +147,11 @@ const List=()=>{
 //查询
 const btnSelect=()=>{
   formData.value.pageNum=1,
-  formData.value.pageSize10
-  List_Defect(formData.value).then(res=>{
+  formData.value.pageSize=10
+  List_Produc(formData.value).then(res=>{
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)
-      List()
     }else{
       ElMessage.error(res.data.msg)
     }
@@ -231,10 +229,18 @@ axios(getAxios).then(res=>{
 
 
 //编辑
-const editRow=(row)=>{
+const editRow=async(row)=>{
   uPddialog.value=true
   flag.value=true
   updFormData.value=row
+  List_processRoute().then(res=>{
+    updFormData.value.option=res.data.rows.map(item => ({
+      label: item.processRouteName,
+      value: item.processRouteId
+    }))
+  
+    console.log(updFormData.value.option,444);
+  })
 }
 
 //编辑或新增提交
@@ -242,7 +248,7 @@ const uPdSubmit=()=>{
 
 if(flag.value==true){ //flag判断此操作是编辑还是增加
 
-edit_Defect( updFormData.value).then(res=>{  //编辑
+edit_Defect(updFormData.value).then(res=>{  //编辑
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)

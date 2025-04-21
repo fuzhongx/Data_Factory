@@ -1,5 +1,5 @@
 <template>
-  <el-form :inline="inline" :label-width="LabelWidth" class="demo-form-inline" :model="modelValue" ref="myFormRef" :rules="rules">
+  <el-form :inline="inline" :label-width="LabelWidth" class="demo-form-inline" :model="modelValue" ref="myFormRef" :rules="rules" >
     <template v-for="(item, index) in formItems" :key="index">
       <el-form-item :label="item.label" :prop="item.field">
     
@@ -17,7 +17,7 @@
         </template>
 
         <template v-else-if="item.type === 'select'">
-          <el-select :placeholder="item.placeholder" class="active" v-model="modelValue[item.field]" >
+          <el-select :placeholder="item.placeholder"  v-model="modelValue[item.field]" :class="item.inpWidthHeight">
             <el-option v-for="options in item.option" :key="options.value" :value="options.value"
               :label="options.label">
             </el-option>
@@ -37,7 +37,7 @@
 
         <template v-else-if="item.type === 'date'">
           <el-date-picker :type=item.type v-model="modelValue[item.field]" :placeholder="item.placeholder"
-            class="active" />
+          :class="item.inpWidthHeight"/>
         </template>
  
         <!-- <template v-else-if="item.type === 'checkbox'">
@@ -47,7 +47,7 @@
         </template> -->
        
         <template v-else-if="item.type === 'button'">
-          <el-button @click="handleRandom" class="btn">自动生成</el-button>
+          <el-button @click="handleRandom" class="btn" :disabled="item.disabled">自动生成</el-button>
         </template>
 
       </el-form-item>
@@ -121,11 +121,26 @@ defineExpose({
 </style>
 
 <style>
+.el-button.is-disabled{
+  background-color: #598df5;
+  color: #fff;
+}
+.el-button.is-disabled:hover{
+  background-color: #598df5;
+  color: #fff;
+}
+.textarea{
+  width: 300px;
+}
 .btn{
   padding: 0px 20px;
   color: #fff;
   background-color: #3671e8;
   border: 1px solid #3671e8;
+}
+.btn:hover{
+  background-color: #598df5;
+  color: #fff;
 }
 .el-form-item__label {
   font-weight: 1000 !important;

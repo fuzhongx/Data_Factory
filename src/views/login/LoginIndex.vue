@@ -2,7 +2,7 @@
     <div class="contair contair-blur">
         <div class="box">
             <el-form ref="ruleFormRef" style="max-width: 450px" :model="LoginForm" status-icon label-width="auto"
-                class="demo-ruleForm" :rules="rules">
+                class="demo-ruleForm" :rules="rules" @submit="submitForm">
                 <el-form-item>
                     <div class="login-title-box">
                         <i><img src="@/assets/image/logo.png" alt="" srcset="" class="title-img"></i>
@@ -33,7 +33,9 @@
                         <span>忘记密码</span>
                     </div>
                 </el-form-item>
-                <el-button type="primary" @click="submitForm(ruleFormRef)" class="btnSubmit"
+                <!-- <el-button type="submit" @click="submitForm(ruleFormRef)" class="btnSubmit"
+                    :loading="LoginForm.loading"> 登录</el-button> -->
+                    <el-button type="primary"  class="btnSubmit"
                     :loading="LoginForm.loading"> 登录</el-button>
             </el-form>
         </div>

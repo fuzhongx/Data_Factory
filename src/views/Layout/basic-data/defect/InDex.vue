@@ -153,7 +153,6 @@ const btnSelect=()=>{
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)
-      List()
     }else{
       ElMessage.error(res.data.msg)
     }
