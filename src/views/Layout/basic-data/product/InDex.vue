@@ -77,8 +77,9 @@ import cookies from "vue-cookies";
 const token = cookies.get("token");
 import {ref,onMounted,reactive} from 'vue'
 import {
-  List_Produc,
-  List_processRoute
+  List_Produce,
+  add_Produce,
+  edit_Produce
 } from '@/requert/basic-data/product.js'
 import axios from 'axios'
 
@@ -135,7 +136,7 @@ onMounted(()=>{
 })
 
 const List=()=>{
-  List_Produc({
+  List_Produce({
     pageNum:Page.currentPage,
     pageSize:Page.pageSize
   }).then(res=>{
@@ -148,7 +149,7 @@ const List=()=>{
 const btnSelect=()=>{
   formData.value.pageNum=1,
   formData.value.pageSize=10
-  List_Produc(formData.value).then(res=>{
+  List_Produce(formData.value).then(res=>{
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)
@@ -165,7 +166,7 @@ const reset=()=>{
 }
 
 let deleteParams = {
-  url: "https://www.cp-mes.cn/prod-api/system/defect/",
+  url: "https://www.cp-mes.cn/prod-api/system/product/",
   ArrayId: [],
   method() {
     List();
@@ -180,23 +181,22 @@ bus.on('getCheckedBoxID',k=>{
   getId.value=k
   const newId = ref(new Set());
   k.forEach((item) => {
-    newId.value.add(item.defectId);
+    newId.value.add(item.productId);
     getIdList.value=Array.from(newId.value)
-    getAxios.url='https://www.cp-mes.cn/prod-api/system/defect/'+Array.from(newId.value)
+    getAxios.url='https://www.cp-mes.cn/prod-api/system/product/'+Array.from(newId.value)
  }); 
 
 })
 
 //多选删除
 const handel=()=>{
-  console.log(getIdList.value);
   deleteParams.ArrayId=getIdList.value
   handleDelete(deleteParams)
 }
   
 //删除
 const deleteRow=(row)=>{
-deleteParams.ArrayId=row.defectId
+deleteParams.ArrayId=row.productId
 handleDelete(deleteParams)
 }
 
@@ -208,6 +208,10 @@ const flag=ref(true)
 //新增
 const handleAdd=()=>{
   uPddialog.value=true
+  updFormConfig.formItems.map(item=>{
+    item.disabled=false
+  })
+  console.log(updFormData.value,456);
   flag.value=false
 }
 
@@ -233,22 +237,14 @@ const editRow=async(row)=>{
   uPddialog.value=true
   flag.value=true
   updFormData.value=row
-  List_processRoute().then(res=>{
-    updFormData.value.option=res.data.rows.map(item => ({
-      label: item.processRouteName,
-      value: item.processRouteId
-    }))
   
-    console.log(updFormData.value.option,444);
-  })
 }
 
 //编辑或新增提交
 const uPdSubmit=()=>{
 
 if(flag.value==true){ //flag判断此操作是编辑还是增加
-
-edit_Defect(updFormData.value).then(res=>{  //编辑
+  edit_Produce(updFormData.value).then(res=>{  //编辑
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)
@@ -261,7 +257,7 @@ edit_Defect(updFormData.value).then(res=>{  //编辑
 }else{
 
 
-add_Defect(updFormData.value).then(res=>{  //新增
+  add_Produce(updFormData.value).then(res=>{  //新增
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)

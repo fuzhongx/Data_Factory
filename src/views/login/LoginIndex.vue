@@ -33,10 +33,10 @@
                         <span>忘记密码</span>
                     </div>
                 </el-form-item>
-                <!-- <el-button type="submit" @click="submitForm(ruleFormRef)" class="btnSubmit"
-                    :loading="LoginForm.loading"> 登录</el-button> -->
-                    <el-button type="primary"  class="btnSubmit"
+                <el-button type="submit" @click="submitForm(ruleFormRef)" class="btnSubmit"
                     :loading="LoginForm.loading"> 登录</el-button>
+                    <!-- <el-button type="primary"  class="btnSubmit"
+                    :loading="LoginForm.loading"> 登录</el-button> -->
             </el-form>
         </div>
     </div>

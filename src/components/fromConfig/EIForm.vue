@@ -17,9 +17,15 @@
         </template>
 
         <template v-else-if="item.type === 'select'">
-          <el-select :placeholder="item.placeholder"  v-model="modelValue[item.field]" :class="item.inpWidthHeight">
-            <el-option v-for="options in item.option" :key="options.value" :value="options.value"
-              :label="options.label">
+          <el-select :placeholder="item.placeholder"  v-model="modelValue[item.field]" :class="item.inpWidthHeight"
+           :loading="loadingOptions[item.field]"
+           @focus="loadOptions(item)">
+            <el-option 
+            v-for="opt in dynamicOptions[item.field] || []"
+            :key="opt.value"
+            :label="opt.label"
+            :value="opt.label"
+            >
             </el-option>
           </el-select>
         </template>
@@ -58,7 +64,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed,defineExpose,ref,defineEmits } from 'vue'
+import { defineProps, computed,defineExpose,ref,defineEmits, onMounted } from 'vue'
 import { dateValue } from '@/ulit/getDate';
 import {randomCode} from '@/components/fromConfig/randomNum'
  
@@ -78,9 +84,16 @@ const props = defineProps({
   },
   rules:{
     type:Object
+  },
+  options:{
+    type:() => Promise
   }
+
 })
 
+onMounted(()=>{
+
+})
 const emit = defineEmits(['update:modelValue'])
 
 const modelValue = computed({
@@ -97,6 +110,22 @@ const handleRandom=()=>{
   randomCode(modelValue)
 }
 
+const dynamicOptions = ref({}); // 存储动态选项
+const loadingOptions = ref({}); // 加载状态
+
+// 加载异步选项
+const loadOptions = async (item) => {
+  if (item.options && typeof item.options === 'function') {
+    try {
+      loadingOptions.value[item.field] = true;
+      dynamicOptions.value[item.field] = await item.options();
+      
+    } finally {
+      loadingOptions.value[item.field] = false;
+    }
+  }
+};
+
 
 //重置
 const reset=()=>{
@@ -106,8 +135,10 @@ const reset=()=>{
 //抛出方法，父组件调用子组件方法
 defineExpose({
   reset,
-  randomCode
+  randomCode,
+  loadOptions
 })
+
 </script>
 <style lang="scss" scoped>
 .active {

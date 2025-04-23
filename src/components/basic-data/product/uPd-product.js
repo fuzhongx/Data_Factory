@@ -1,4 +1,7 @@
-import { Value } from "sass";
+import {
+  List_processRoute,
+  produce_unit
+} from '@/requert/basic-data/product.js'
 
 const formItems=[
     {
@@ -41,15 +44,21 @@ const formItems=[
           type: "select",
           label: "工艺路线",
           placeholder: "请输入工艺路线",
-          field: "routeId",
+          field: "routeName",
           disabled:false,
           inpWidthHeight:'activeForm',
-          option:[
-            {
-            label:'产品一工艺路线',
-            Value:'1840673631837167617'
+          options:async () => {
+            try {
+              const res = await List_processRoute();
+              return res.data.rows.map(item => ({
+                label: item.processRouteName,
+                value: item.processRouteId
+              }));
+            } catch (error) {
+              console.error("获取工艺路线失败:", error);
+              return []; // 返回空数组避免页面报错
+            }
           }
-        ]
         },
         {
           type: "select",
@@ -58,7 +67,18 @@ const formItems=[
           field: "productUnit",
           disabled:false,
           inpWidthHeight:'activeForm',
-          option:[]
+          options:async () => {
+            try {
+              const res = await produce_unit();
+              return res.data.data.map(item => ({
+                label: item.dictLabel,
+                value: item.dictValue
+              }));
+            } catch (error) {
+              console.error("获取工艺路线失败:", error);
+              return []; // 返回空数组避免页面报错
+            }
+          }
         },
         {
           type: "textarea",
