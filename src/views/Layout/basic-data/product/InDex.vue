@@ -208,11 +208,11 @@ const flag=ref(true)
 //新增
 const handleAdd=()=>{
   uPddialog.value=true
+  flag.value=false
   updFormConfig.formItems.map(item=>{
     item.disabled=false
   })
-  console.log(updFormData.value,456);
-  flag.value=false
+
 }
 
 
@@ -236,13 +236,15 @@ axios(getAxios).then(res=>{
 const editRow=async(row)=>{
   uPddialog.value=true
   flag.value=true
-  updFormData.value=row
-  
+  updFormData.value=row 
+  updFormConfig.formItems.map(item=>{
+    if(item.label=='产品编号'||item.label=='自动生成')
+    item.disabled=true
+  })
 }
 
 //编辑或新增提交
 const uPdSubmit=()=>{
-
 if(flag.value==true){ //flag判断此操作是编辑还是增加
   edit_Produce(updFormData.value).then(res=>{  //编辑
     if(res.data.code==200){
@@ -255,9 +257,20 @@ if(flag.value==true){ //flag判断此操作是编辑还是增加
     }
   })
 }else{
-
-
-  add_Produce(updFormData.value).then(res=>{  //新增
+  add_Produce({
+    inventoryMax: 0,
+    inventoryMin: 0,
+    inventorySafe: 0,
+    productAttribute: updFormData.value.productAttribute,
+    productName:  updFormData.value.productName,
+    productNumber:  updFormData.value.productNumber,
+    productQuantity: 0,
+    productUnit: updFormData.value.productUnit,
+    remark: updFormData.value.remark,
+    routeId:  updFormData.value.routeId,
+    routeName: updFormData.value.routeName,
+    specification:  updFormData.value.specification,
+  }).then(res=>{  //新增
     if(res.data.code==200){
       tableData.value=res.data.rows
       ElMessage.success(res.data.msg)

@@ -31,7 +31,7 @@ if(modelValue.value.defectNumber){
 }
 
 //产品
-if(modelValue.value.productNumber){
+if(modelValue){
   let randomProduce='CP'+dateValue()+randomNum
   modelValue.value.productNumber= randomProduce
 

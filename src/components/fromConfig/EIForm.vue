@@ -24,7 +24,7 @@
             v-for="opt in dynamicOptions[item.field] || []"
             :key="opt.value"
             :label="opt.label"
-            :value="opt.label"
+            :value="opt.value"
             >
             </el-option>
           </el-select>
@@ -58,7 +58,7 @@
 
       </el-form-item>
     </template>
-
+    <slot name='table'></slot>
     <slot name='footer'></slot>
   </el-form>
 </template>

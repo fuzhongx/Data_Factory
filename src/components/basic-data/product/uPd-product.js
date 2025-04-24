@@ -14,6 +14,7 @@ const formItems=[
     },
     {
       type: "button",
+      label: "自动生成",
       disabled:true,
     },
     {

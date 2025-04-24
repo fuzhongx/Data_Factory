@@ -13,7 +13,24 @@
         inactive-value="1"
         />
     </template>
-  
+   </el-table-column>
+
+   <el-table-column v-else-if="item.type=='select'" :label="item.label" :align="item.align" :prop="item.prop">
+    <template #default="scope">  
+         <!-- virtual-scroll数据大于100虚拟滚动 -->
+        <el-select
+        v-model="scope.row.procedureName" placeholder="请输入内容" :disabled="item.disabled" 
+        :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" v-if="deepArray(scope.row.procedureList)"
+        >
+        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label"  ></el-option>
+        </el-select>
+    </template> 
+   </el-table-column>
+
+   <el-table-column v-else-if="item.type=='input'" :label="item.label" :align="item.align" :prop="item.prop">
+    <template #default="scope">
+        <el-input v-model="scope.row.prop" placeholder="请输入内容" :disabled="item.disabled"></el-input>
+    </template>
    </el-table-column>
 
     <el-table-column v-bind="item" v-else>
@@ -39,8 +56,36 @@ const prop = defineProps({
 });
 onMounted(()=>{
 
-
 })
+
+const selectValue=ref()
+
+const deepArray= (row)=> {
+      // 假设你想访问 row.someArray[0].anotherArray
+    // return row.map(k=>{
+    //    selectValue.value=k?.procedureName
+    //  })
+  }
+
+
+const dynamicOptions = ref({}); // 存储动态选项
+const loadingOptions = ref({}); // 加载状态
+
+// 加载异步选项
+const loadOptions = async (item) => {
+  console.log(item.options());
+  
+  if (item.options && typeof item.options === 'function') {
+    try {
+      loadingOptions.value[item.prop] = true;
+      dynamicOptions.value[item.prop] = await item.options();
+      
+    } finally {
+      loadingOptions.value[item.prop] = false;
+    }
+  }
+};
+
 
 //获取多选ID
 const getCheckedBox_Value = (row) => {
