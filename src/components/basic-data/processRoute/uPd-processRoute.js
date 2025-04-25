@@ -50,14 +50,14 @@ const formItems=[
         options:async()=>{
           const res=await procedure()
           return res.data.rows.map(item=>({
-            value:item.procedureId,
+            value:String(item.procedureId),
             label:item.procedureName
           }))
         }
       },
       {
         type: "input",
-        prop: "",
+        prop: "procedureName",
         label: "工艺要求",
         width: "auto",
         disabled:true,

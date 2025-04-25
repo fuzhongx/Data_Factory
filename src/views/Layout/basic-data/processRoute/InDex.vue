@@ -1,6 +1,6 @@
 <template>
     <div>
-  
+
   <!-- from表单 -->
       <ELForm v-bind="formConfig" v-model:modelValue="formData" ref="myFormRef">
         <template #footer>
@@ -9,11 +9,12 @@
           <el-button class="tav_btn" @click="reset">重置</el-button>
         </el-form-item>
       </template>
+
       </ELForm>
-  
       <!-- from编辑表单 -->
       <el-dialog v-model="uPddialog" :title="flag==true? '工艺路线修改操作': '工艺路线新增操作'" width="50%">
       <ELForm v-bind="updFormConfig" v-model:modelValue="updFormData" ref="myFormRef">
+>
     <!-- 工序 -->
     <template #table>
         <div class="routeText">
@@ -100,7 +101,9 @@
   
   
   const tableData=ref()
+
   const myFormRef=ref()
+
   //编辑表单
   const FormTableData=ref()
   

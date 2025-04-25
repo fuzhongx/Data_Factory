@@ -20,8 +20,10 @@
          <!-- virtual-scroll数据大于100虚拟滚动 -->
         <el-select
         v-model="scope.row.procedureName" placeholder="请输入内容" :disabled="item.disabled" 
-        :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" v-if="deepArray(scope.row.procedureList)"
+        :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" 
         >
+       
+        <el-option v-for="proc in scope.row.procedureList" :key="proc.procedureId" :label="proc.procedureName" :value="proc.procedureId"/>
         <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label"  ></el-option>
         </el-select>
     </template> 
@@ -60,12 +62,13 @@ onMounted(()=>{
 
 const selectValue=ref()
 
-const deepArray= (row)=> {
-      // 假设你想访问 row.someArray[0].anotherArray
-    // return row.map(k=>{
-    //    selectValue.value=k?.procedureName
-    //  })
-  }
+const handArray=(item,rows)=>{
+item.map(k=>{
+  selectValue.value= k.procedureName
+  console.log(k.procedureName,555);
+  
+})
+}
 
 
 const dynamicOptions = ref({}); // 存储动态选项
