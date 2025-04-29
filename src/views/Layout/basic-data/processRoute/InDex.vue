@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
 
   <!-- from表单 -->
       <ELForm v-bind="formConfig" v-model:modelValue="formData" ref="myFormRef">
@@ -19,9 +19,9 @@
     <template #table>
         <div class="routeText">
             <h4>工序</h4>
-            <el-button class="btn">新增</el-button>
+            <el-button class="btn" @click="tableAdd">新增</el-button>
         </div>
-        <ElTable :column="updFormConfig.tableItem" :data="tableData">
+        <ElTable :column="updFormConfig.tableItem" :data="updTableData" class="table">
             <template #operation="scope">
             <el-button @click="deleteRow(scope.row)" class="btn_active">删除</el-button>
             </template>
@@ -94,13 +94,15 @@
   import {ref,onMounted,reactive} from 'vue'
   import {
     List_processRoute,
-    procedure
+    edit_processRoute
   } from '@/requert/basic-data/processRoute.js'
   import axios from 'axios'
   
   
   
   const tableData=ref()
+  //存储编辑table Select数据
+  const updTableData=ref()
 
   const myFormRef=ref()
 
@@ -192,7 +194,7 @@
       List();
     },
   };
-  
+
   //表格选中ID
   const getId=ref([])
   const getIdList=[]
@@ -263,19 +265,31 @@
       if(item.label=='产品编号'||item.label=='自动生成')
       item.disabled=true
     })
-    console.log(  updFormData.value);
-    
+    //编辑表格展示数据
+    updTableData.value=row.procedureList
+  }
+   
+  //新增工序输入框
+  const tableAdd=()=>{
+    const tableColumn= document.createElement('el-table-column')
+    tableColumn.id='select'
+    tableColumn.placeholder = "请输入内容";
+    document.querySelector('table').appendChild(tableColumn)
+    const select= document.createElement('input')
+    select.type='select'
+    document.querySelector('table').appendChild(select)
   }
   
   //编辑或新增提交
   const uPdSubmit=()=>{
+    console.log(updTableData.value,'12345678');
+    updFormData.value.procedureList= updTableData.value
+    console.log(updFormData.value,'年轮');
   if(flag.value==true){ //flag判断此操作是编辑还是增加
-    edit_Produce(updFormData.value).then(res=>{  //编辑
+    edit_processRoute(updFormData.value).then(res=>{  //编辑
       if(res.data.code==200){
-        tableData.value=res.data.rows
         ElMessage.success(res.data.msg)
         uPddialog.value=false
-        List()
       }else{
         ElMessage.error(res.data.msg)
       }
@@ -299,7 +313,6 @@
         tableData.value=res.data.rows
         ElMessage.success(res.data.msg)
         uPddialog.value=false
-        List()
       }else{
         ElMessage.error(res.data.msg)
       }

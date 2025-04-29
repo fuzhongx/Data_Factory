@@ -22,9 +22,7 @@
         v-model="scope.row.procedureName" placeholder="请输入内容" :disabled="item.disabled" 
         :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" 
         >
-       
-        <el-option v-for="proc in scope.row.procedureList" :key="proc.procedureId" :label="proc.procedureName" :value="proc.procedureId"/>
-        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label"  ></el-option>
+        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.label" :label="opt.label"  ></el-option>
         </el-select>
     </template> 
    </el-table-column>
@@ -59,17 +57,6 @@ const prop = defineProps({
 onMounted(()=>{
 
 })
-
-const selectValue=ref()
-
-const handArray=(item,rows)=>{
-item.map(k=>{
-  selectValue.value= k.procedureName
-  console.log(k.procedureName,555);
-  
-})
-}
-
 
 const dynamicOptions = ref({}); // 存储动态选项
 const loadingOptions = ref({}); // 加载状态

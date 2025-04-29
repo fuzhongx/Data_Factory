@@ -15,3 +15,15 @@ export function procedure(params){
         params
     })
 }
+
+
+export function edit_processRoute(data){
+    return service ({
+        url:'/system/processRoute',
+        method:'PUT',
+        data
+    })
+}
+
+
+

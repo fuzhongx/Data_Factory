@@ -57,7 +57,7 @@ const formItems=[
       },
       {
         type: "input",
-        prop: "procedureName",
+        prop: "defectiveNames",
         label: "工艺要求",
         width: "auto",
         disabled:true,
