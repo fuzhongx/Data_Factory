@@ -57,11 +57,19 @@ const isCollapse=ref()
     padding: var(--el-header-padding);
 }
 
+.el-main{
+  transition: left .3s ease-in-out;
+  -webkit-transition: left .3s ease-in-out;
+}
 .el-aside {
   overflow: auto; /* 保持可滚动 */
   scrollbar-width: none; /* 对于Firefox */
-  transition: width 0.3s;
-  
+  // transition: width 0.3s;
+  transition: width 0.15s;
+  -webkit-transition: width 0.15s;
+  -moz-transition: width 0.15s;
+  -webkit-transition: width 0.15s;
+  -o-transition: width 0.15s;
 }
 .el-aside::-webkit-scrollbar {
   display: none; /* 对于Chrome, Safari 和 Opera */

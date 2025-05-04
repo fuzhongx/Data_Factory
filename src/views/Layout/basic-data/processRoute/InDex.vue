@@ -269,15 +269,20 @@
     updTableData.value=row.procedureList
   }
    
+  const _tableColume={
+    isPrint: "1",
+    procedureId: "",
+    procedureName: "",
+    reportingRatio: 1,
+    technologicalRequirements: null,
+  }
   //新增工序输入框
   const tableAdd=()=>{
-    const tableColumn= document.createElement('el-table-column')
-    tableColumn.id='select'
-    tableColumn.placeholder = "请输入内容";
-    document.querySelector('table').appendChild(tableColumn)
-    const select= document.createElement('input')
-    select.type='select'
-    document.querySelector('table').appendChild(select)
+    tableData.value.map(item=>{
+      item.procedureList.push(_tableColume)
+    })
+    console.log(tableData.value);
+    
   }
   
   //编辑或新增提交
@@ -285,11 +290,12 @@
     console.log(updTableData.value,'12345678');
     updFormData.value.procedureList= updTableData.value
     console.log(updFormData.value,'年轮');
-  if(flag.value==true){ //flag判断此操作是编辑还是增加
+  if(flag.value==true){ //flag判断此操作是编辑还是增加,true编辑false添加
     edit_processRoute(updFormData.value).then(res=>{  //编辑
       if(res.data.code==200){
         ElMessage.success(res.data.msg)
         uPddialog.value=false
+        List()
       }else{
         ElMessage.error(res.data.msg)
       }

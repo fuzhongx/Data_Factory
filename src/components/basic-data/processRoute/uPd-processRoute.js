@@ -43,21 +43,21 @@ const formItems=[
       },
       {
         type: "select",
-        prop: "procedureName",
+        prop: "procedureNames",
         label: "工序",
         width: "auto",
         align:'center',
         options:async()=>{
           const res=await procedure()
           return res.data.rows.map(item=>({
-            value:String(item.procedureId),
+            value:item.procedureId,
             label:item.procedureName
           }))
         }
       },
       {
         type: "input",
-        prop: "defectiveNames",
+        prop: "technologicalRequirements",
         label: "工艺要求",
         width: "auto",
         disabled:true,

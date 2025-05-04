@@ -21,15 +21,17 @@
         <el-select
         v-model="scope.row.procedureName" placeholder="请输入内容" :disabled="item.disabled" 
         :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" 
+        @change="handleSelect(scope.row.procedureName)" 
         >
-        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.label" :label="opt.label"  ></el-option>
+        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label" ></el-option>
         </el-select>
     </template> 
    </el-table-column>
 
    <el-table-column v-else-if="item.type=='input'" :label="item.label" :align="item.align" :prop="item.prop">
     <template #default="scope">
-        <el-input v-model="scope.row.prop" placeholder="请输入内容" :disabled="item.disabled"></el-input>
+      <!-- {{  scope.row.technologicalRequirements}} -->
+        <el-input v-model="scope.row.technologicalRequirements" placeholder="请输入要求" :disabled="item.disabled"></el-input>
     </template>
    </el-table-column>
 
@@ -46,6 +48,10 @@
 <script setup>
 import { defineProps, onMounted, ref } from "vue";
 import bus from "@/ulit/Bus.js";
+import axios from "axios";
+import cookies from 'vue-cookies'
+const token = cookies.get('token')
+
 const prop = defineProps({
   tableData: {
     type: Array,
@@ -63,7 +69,7 @@ const loadingOptions = ref({}); // 加载状态
 
 // 加载异步选项
 const loadOptions = async (item) => {
-  console.log(item.options());
+  console.log(item.options(),13);
   
   if (item.options && typeof item.options === 'function') {
     try {
@@ -76,6 +82,20 @@ const loadOptions = async (item) => {
   }
 };
 
+const handleSelect=(procedureName)=>{
+console.log(procedureName);
+axios({
+  url:'https://www.cp-mes.cn/prod-api/system/procedure/'+procedureName,
+  method:'get',
+  headers:{
+    Authorization:'Bearer '+token
+  }
+}).then(res=>{
+  console.log(res);
+  
+})
+
+}
 
 //获取多选ID
 const getCheckedBox_Value = (row) => {

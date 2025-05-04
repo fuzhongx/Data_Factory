@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <el-menu active-text-color="#000" background-color="#10469c" text-color="#fff" class="el-menu-vertical-demo menu-bg"
-      id="menu" :default-active="data.defaultMenu" :default-openeds="data.openKey" router :collapse="isCollapse"
+      id="menu" :default-active="data.defaultMenu" :default-openeds="data.openKey" router :collapse="isCollapse" :collapse-transition='false'
       @open="handleOpen" style="height: 100vh" @select="handleMenuSelect"
       
       >
@@ -50,7 +50,7 @@
 import { onMounted, ref, reactive, onUnmounted } from "vue";
 import { getRouter } from "@/requert/getRouter/getRouter";
 import bus from "@/ulit/Bus.js";
-import { ElMessage } from "element-plus";
+import { ElMessage, selectKey } from "element-plus";
 import { useStore } from 'vuex';
 
 const stroe = useStore()
