@@ -21,7 +21,7 @@
         <el-select
         v-model="scope.row.procedureName" placeholder="请输入内容" :disabled="item.disabled" 
         :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" 
-        @change="handleSelect(scope.row.procedureName)" 
+        @change="handleSelect(scope.row)" 
         >
         <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label" ></el-option>
         </el-select>
@@ -83,7 +83,7 @@ const loadOptions = async (item) => {
 };
 
 const handleSelect=(procedureName)=>{
-console.log(procedureName);
+  console.log(procedureName,888);
 axios({
   url:'https://www.cp-mes.cn/prod-api/system/procedure/'+procedureName,
   method:'get',

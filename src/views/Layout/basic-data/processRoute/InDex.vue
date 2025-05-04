@@ -288,6 +288,12 @@
   //编辑或新增提交
   const uPdSubmit=()=>{
     console.log(updTableData.value,'12345678');
+    const newId=ref(new Set())
+    updTableData.value.map(item=>{
+      newId.value.add(item.procedureId)
+      updFormData.value.procedureIds=newId.value
+    })
+
     updFormData.value.procedureList= updTableData.value
     console.log(updFormData.value,'年轮');
   if(flag.value==true){ //flag判断此操作是编辑还是增加,true编辑false添加
@@ -295,6 +301,7 @@
       if(res.data.code==200){
         ElMessage.success(res.data.msg)
         uPddialog.value=false
+        tableData.value=res.data.rows
         List()
       }else{
         ElMessage.error(res.data.msg)
