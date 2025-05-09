@@ -1,6 +1,5 @@
 <template>
     <div class="main">
-
   <!-- from表单 -->
       <ELForm v-bind="formConfig" v-model:modelValue="formData" ref="myFormRef">
         <template #footer>
@@ -91,7 +90,7 @@
   import bus from "@/ulit/Bus.js";
   import cookies from "vue-cookies";
   const token = cookies.get("token");
-  import {ref,onMounted,reactive} from 'vue'
+  import {ref,onMounted,reactive, watch} from 'vue'
   import {
     List_processRoute,
     edit_processRoute
@@ -281,21 +280,19 @@
     tableData.value.map(item=>{
       item.procedureList.push(_tableColume)
     })
-    console.log(tableData.value);
-    
   }
-  
+
   //编辑或新增提交
   const uPdSubmit=()=>{
-    console.log(updTableData.value,'12345678');
-    const newId=ref(new Set())
-    updTableData.value.map(item=>{
-      newId.value.add(item.procedureId)
-      updFormData.value.procedureIds=newId.value
-    })
-
+    // const newId=ref(new Set())
+    // updTableData.value.map(item=>{
+    //   console.log(item.procedureId);
+      
+    //   newId.value.add(item.procedureId)
+    //   updFormData.value.procedureIds=newId.value
+    // })
     updFormData.value.procedureList= updTableData.value
-    console.log(updFormData.value,'年轮');
+    
   if(flag.value==true){ //flag判断此操作是编辑还是增加,true编辑false添加
     edit_processRoute(updFormData.value).then(res=>{  //编辑
       if(res.data.code==200){

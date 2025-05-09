@@ -23,7 +23,7 @@
         :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" 
         @change="handleSelect(scope.row)" 
         >
-        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label" ></el-option>
+        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt" :label="opt.label" ></el-option>
         </el-select>
     </template> 
    </el-table-column>
@@ -69,8 +69,6 @@ const loadingOptions = ref({}); // 加载状态
 
 // 加载异步选项
 const loadOptions = async (item) => {
-  console.log(item.options(),13);
-  
   if (item.options && typeof item.options === 'function') {
     try {
       loadingOptions.value[item.prop] = true;
@@ -83,7 +81,8 @@ const loadOptions = async (item) => {
 };
 
 const handleSelect=(procedureName)=>{
-  console.log(procedureName,888);
+  console.log(procedureName,12);
+  
 axios({
   url:'https://www.cp-mes.cn/prod-api/system/procedure/'+procedureName,
   method:'get',
