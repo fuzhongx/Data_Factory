@@ -166,7 +166,7 @@ const reset=()=>{
 }
 
 let deleteParams = {
-  url: "https://www.cp-mes.cn/prod-api/system/defect/",
+  url: "/system/defect/",
   ArrayId: [],
   method() {
     List();

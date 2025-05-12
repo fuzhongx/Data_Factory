@@ -171,7 +171,7 @@ const getCheckedBox_Value = (row) => {
 }
 //删除方法所需参数
 const props=reactive({
-    url:data.pathUrl,
+    url:'/system/purveyor/',
     ArrayId:Array.from(deleteId.value),
     method(){
         List()

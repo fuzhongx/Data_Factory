@@ -17,15 +17,13 @@
         </template>
 
         <template v-else-if="item.type === 'select'">
-          <el-select :placeholder="item.placeholder"  v-model="modelValue[item.field]" :class="item.inpWidthHeight"
+          <el-select :placeholder="item.placeholder"  v-model="modelValue[item.field]" :class="item.inpWidthHeight" :disabled="item.disabled"
+            value-key="label"
            :loading="loadingOptions[item.field]"
            @focus="loadOptions(item)">
-            <el-option 
+            <el-option
             v-for="opt in dynamicOptions[item.field] || []"
-            :key="opt.value"
-            :label="opt.label"
-            :value="opt.value"
-            >
+            :key="opt.value" :label="opt.label" :value="opt.value">
             </el-option>
           </el-select>
         </template>
@@ -115,10 +113,13 @@ const loadingOptions = ref({}); // 加载状态
 
 // 加载异步选项
 const loadOptions = async (item) => {
+  console.log(item,'zengjia ');
+  
   if (item.options && typeof item.options === 'function') {
     try {
       loadingOptions.value[item.field] = true;
       dynamicOptions.value[item.field] = await item.options();
+      console.log( item.options());
       
     } finally {
       loadingOptions.value[item.field] = false;

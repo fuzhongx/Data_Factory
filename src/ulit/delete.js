@@ -15,7 +15,7 @@ export const handleDelete=(data)=>{
         }
       ).then(() => {
         axios({
-          url: data.url + data.ArrayId,
+          url: 'https://www.cp-mes.cn/prod-api/'+data.url + data.ArrayId,
           method: 'DELETE',
           headers: {
             Authorization: 'Bearer ' + token

@@ -223,8 +223,6 @@ bus.on('getCheckedBoxID',k=>{
   
   const newId = ref(new Set());
   k.forEach((item) => {
-    console.log('展示',item);
-    
     newId.value.add(item.clientId);
     getCheckedID.value=Array.from(newId.value)
     getAxios.url='https://www.cp-mes.cn/prod-api/system/client/'+Array.from(newId.value)
@@ -277,7 +275,7 @@ const uPdBtn=()=>{
  */
 
  let deleteParams = {
-  url: "https://www.cp-mes.cn/prod-api/system/client/",
+  url: "system/client/",
   ArrayId: [],
   method() {
     List();

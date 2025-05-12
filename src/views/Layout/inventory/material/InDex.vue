@@ -221,7 +221,7 @@ const AddBtn = () => {
  * @param deleteParams 删除所需参数
  */
 let deleteParams = {
-  url: "https://www.cp-mes.cn/prod-api/system/material/",
+  url: "/system/material/",
   ArrayId: [],
   method() {
     List();

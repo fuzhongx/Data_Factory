@@ -456,7 +456,7 @@ const _UPD_SuBmit = () => {
 
 //删除方法所需参数
 const props=reactive({
-    url:data.pathUrl,
+    url:'/system/attachment/',
     ArrayId:deleteId.value,
     method(){
         list()

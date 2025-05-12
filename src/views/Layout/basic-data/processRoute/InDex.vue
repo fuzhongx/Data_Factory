@@ -187,7 +187,7 @@
   }
   
   let deleteParams = {
-    url: "https://www.cp-mes.cn/prod-api/system/product/",
+    url: "/system/product/",
     ArrayId: [],
     method() {
       List();
@@ -284,13 +284,6 @@
 
   //编辑或新增提交
   const uPdSubmit=()=>{
-    // const newId=ref(new Set())
-    // updTableData.value.map(item=>{
-    //   console.log(item.procedureId);
-      
-    //   newId.value.add(item.procedureId)
-    //   updFormData.value.procedureIds=newId.value
-    // })
     updFormData.value.procedureList= updTableData.value
     
   if(flag.value==true){ //flag判断此操作是编辑还是增加,true编辑false添加
@@ -305,28 +298,16 @@
       }
     })
   }else{
-    add_Produce({
-      inventoryMax: 0,
-      inventoryMin: 0,
-      inventorySafe: 0,
-      productAttribute: updFormData.value.productAttribute,
-      productName:  updFormData.value.productName,
-      productNumber:  updFormData.value.productNumber,
-      productQuantity: 0,
-      productUnit: updFormData.value.productUnit,
-      remark: updFormData.value.remark,
-      routeId:  updFormData.value.routeId,
-      routeName: updFormData.value.routeName,
-      specification:  updFormData.value.specification,
-    }).then(res=>{  //新增
-      if(res.data.code==200){
-        tableData.value=res.data.rows
-        ElMessage.success(res.data.msg)
-        uPddialog.value=false
-      }else{
-        ElMessage.error(res.data.msg)
-      }
-    })
+    // add_Produce({
+    // }).then(res=>{  //新增
+    //   if(res.data.code==200){
+    //     tableData.value=res.data.rows
+    //     ElMessage.success(res.data.msg)
+    //     uPddialog.value=false
+    //   }else{
+    //     ElMessage.error(res.data.msg)
+    //   }
+    // })
   }
   }
   const handleExport=()=>{

@@ -1,5 +1,4 @@
 import {custom_type} from "@/requert/basic-data/customInfo/product.js";
-
 // 编辑操作配置
 export default {
     LabelWidth:'122px',
@@ -16,16 +15,16 @@ export default {
         type: 'select',
         label: '自定义字段类型',
         placeholder: '请输入自定义字段类型',
-        disabled:true,
+        disabled:false,
         field:'customType',
         inpWidthHeight:'activeForm',
         options:async()=>{
-          const res=await custom_type()
-          return res.data.data.map(item=>({
-              label:item.dictLabel,
-              value:item.dictValue
-          }))
-        }
+            const res=await custom_type()
+            return res.data.data.map(item=>({
+                label:item.dictLabel,
+                value:item.dictValue
+            }))
+          }
       },
       {
         type: 'textarea',

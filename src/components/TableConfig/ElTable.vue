@@ -3,12 +3,19 @@
     v-bind="$attrs"
     :data="tableData"
     @selection-change="getCheckedBox_Value"
+    fit
   >
-  
+
   <template  v-for="item in column" :key="item.prop">
-   <el-table-column v-if="item.type=='switch'" :label="item.label" :align="item.align" :prop="item.prop">
+    
+   <el-table-column v-if="item.childrens" :label="item.label" :align="item.align">
+    <el-table-column  :label="childs.label" :align="childs.align" :prop="childs.prop" v-for="childs in item.childrens" :key="childs.prop">
+    </el-table-column>
+   </el-table-column>
+
+   <el-table-column v-else-if="item.type=='switch'" :label="item.label" :align="item.align" :prop="item.prop">
     <template #default="scope">
-        <el-switch v-model="scope.row.status"
+        <el-switch v-model="scope.row.status" 
         active-value="0"
         inactive-value="1"
         />
@@ -23,14 +30,13 @@
         :loading="loadingOptions[item.prop]"  @focus="loadOptions(item)" 
         @change="handleSelect(scope.row)" 
         >
-        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt" :label="opt.label" ></el-option>
+        <el-option v-for="opt in dynamicOptions[item.prop]" :key="opt.value" :value="opt.value" :label="opt.label" ></el-option>
         </el-select>
     </template> 
    </el-table-column>
 
    <el-table-column v-else-if="item.type=='input'" :label="item.label" :align="item.align" :prop="item.prop">
     <template #default="scope">
-      <!-- {{  scope.row.technologicalRequirements}} -->
         <el-input v-model="scope.row.technologicalRequirements" placeholder="请输入要求" :disabled="item.disabled"></el-input>
     </template>
    </el-table-column>
