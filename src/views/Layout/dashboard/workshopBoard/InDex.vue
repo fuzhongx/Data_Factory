@@ -1,11 +1,11 @@
 <template>
-  数据看板
+<div class="boxview">
+
+</div>
 </template>
 
-<script>
-export default {
+<script setup>
 
-}
 </script>
 
 <style>
