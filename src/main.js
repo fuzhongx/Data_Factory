@@ -17,6 +17,7 @@ import axios from 'axios';
 import 'nprogress/nprogress.css'
 import i18n from './lange';
 import router from './router/router.js';
+import '@/ulit/flexible'
 // import { initializeRouter } from '@/router/router';
 
 

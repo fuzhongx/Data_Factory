@@ -75,6 +75,13 @@ const isCollapse=ref()
   display: none; /* 对于Chrome, Safari 和 Opera */
 }
 
-
-
+</style>
+<style>
+.el-main{
+  padding: 0px !important;
+}
+.el-menu {
+    border-right: 0px;
+    box-sizing: border-box;
+}
 </style>
